@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  middleware:
+    build: ./middleware
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    # command: bundle exec rdebug-ide --host '0.0.0.0' --port 1234 -- /service/bin/rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - ./middleware:/middleware
+    ports:
+      - "3000:3000"
+      - "1234:1234"
+    depends_on:
+      - db
+
+  client:
+    build: ./client
+    command: yarn start
+    volumes:
+      - ./client:/client
+    ports:
+      - "4000:4000"    
+    # depends_on:
+    #   - middleware
