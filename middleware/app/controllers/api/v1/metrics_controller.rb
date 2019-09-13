@@ -54,7 +54,9 @@ module Api
                     forecast:24,
                     actual:27}
                   ]
+                  
                 render json: obj, status: 200
+                # render json: Team.all.as_json, status: 200
             end
         end
     end
