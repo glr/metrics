@@ -56,7 +56,7 @@ class TeamHeader extends React.Component {
   render() {
     const data = this.props.data
     return (
-      <div class={this.props.team}>
+      <div className={this.props.team}>
         <div>Team: {data.name}</div>
         <div>Sprint: {data.sprint.name}</div>
         <div>Goals: {data.sprint.goals}</div>
@@ -67,7 +67,7 @@ class TeamHeader extends React.Component {
   }
 }
 
-class TrendChart extends React.Component {
+class BarChart extends React.Component {
   componentDidMount() {
     this.drawChart();
   }
@@ -108,7 +108,7 @@ class TrendChart extends React.Component {
 
   render() {
     return(
-      <div class={this.props.chart}></div>
+      <div className={this.props.chart}></div>
     )
   }
 }
@@ -117,10 +117,10 @@ function App() {
   return (
     <div className="App">
       <TeamHeader data={headData} team="scmdgn"/>
-      <TrendChart data={history} chart="scmdgn"/>
+      <BarChart data={history} chart="scmdgnChart"/>
       <hr />
       <TeamHeader data={headData} team="sdm"/>
-      <TrendChart data={history} chart="sdm"/>
+      <BarChart data={history} chart="sdmChart"/>
     </div>
   );
 }
