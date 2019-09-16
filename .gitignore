@@ -24,3 +24,5 @@ yarn-error.log*
 
 # container ignores
 tmp
+
+.vscode
