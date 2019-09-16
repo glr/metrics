@@ -141,7 +141,7 @@ class LinRegChart extends React.Component {
     const a = yBar - (b * xBar)
 
     const xScale = d3.scaleLinear()
-    .domain([0, n])
+    .domain([0, n-1])
     .range([0, width])
 
     const yScale = d3.scaleLinear()
@@ -165,16 +165,16 @@ class LinRegChart extends React.Component {
     svg.append("path")
     .datum(forecastError)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
+    .attr("stroke", "rgba(0,0,255,1)")
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round")
-    .attr("stroke-width", 3)
+    .attr("stroke-width", 4)
     .attr("d", trendLine)
     
     svg.append("path")
     .datum(forecastError)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
+    .attr("stroke", "rgba(0,0,255,0.25)")
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round")
     .attr("stroke-width", 1)
