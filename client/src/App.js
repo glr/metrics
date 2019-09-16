@@ -52,6 +52,11 @@ const history = [
   actual:27}
 ]
 
+const linearData = {
+  scopeChange: [0.23, 0.09, 0.01, 0.22, 0.26, 0],
+  forecastError: [0.53, 4.50, 1.43, 1.01, 0.23, 1.14],
+  sprints: ["1920", "1921", "1922", "1923", "1924", "1925"]
+}
 class TeamHeader extends React.Component {
   render() {
     const data = this.props.data
@@ -113,6 +118,76 @@ class BarChart extends React.Component {
   }
 }
 
+class LinRegChart extends React.Component {
+  componentDidMount() {
+    this.drawChart()
+  }
+
+  drawChart() {
+    const selector = "." + this.props.chart
+    const forecastError = this.props.data.forecastError
+    // const scopeChange = this.props.data.scopeChange
+    // const sprints = this.props.data.sprints
+    const width = 700
+    const height = 300
+    const n = forecastError.length
+
+    // Linear Regression using Least Squares for trend line
+    const xBar = (n-1)/2 
+    const yBar = d3.mean(forecastError)
+    const num = forecastError.reduce((acc, y, x) => acc + ((x - xBar) * (y - yBar)))
+    const den = forecastError.reduce((acc, y, x) => acc + ((x - xBar) * (x - xBar)))
+    const b = num/den
+    const a = yBar - (b * xBar)
+
+    const xScale = d3.scaleLinear()
+    .domain([0, n])
+    .range([0, width])
+
+    const yScale = d3.scaleLinear()
+    .domain([0, d3.max(forecastError)])
+    .range([height, 0])
+
+    const trendLine = d3.line()
+    .x((d, i) => xScale(i))
+    .y((d, i) => yScale(a+(b*i)))
+
+    const dataLine = d3.line()
+    .x((d, i)=> xScale(i)) // set the x values for the line generator
+    .y(d => yScale(d)) // set the y values for the line generator
+
+    const svg = d3.select(selector)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("margin-left", 100)
+
+    svg.append("path")
+    .datum(forecastError)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-width", 3)
+    .attr("d", trendLine)
+    
+    svg.append("path")
+    .datum(forecastError)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-width", 1)
+    .attr("d", dataLine)
+  }
+
+  render() {
+    return(
+      <div className={this.props.chart}></div>
+    )
+  }
+}
+
 function App() {
   return (
     <div className="App">
@@ -121,6 +196,8 @@ function App() {
       <hr />
       <TeamHeader data={headData} team="sdm"/>
       <BarChart data={history} chart="sdmChart"/>
+      <hr />
+      <LinRegChart data={linearData} chart="sdmLinChart"/>
     </div>
   );
 }
