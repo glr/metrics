@@ -55,7 +55,7 @@ const history = [
 const linearData = {
   scopeChange: [0.23, 0.09, 0.01, 0.22, 0.26, 0],
   forecastError: [0.53, 4.50, 1.43, 1.01, 0.23, 1.14],
-  sprints: ["1920", "1921", "1922", "1923", "1924", "1925"]
+  sprints: ["SDM Sprint 1920", "SDM Sprint 1921", "SDM Sprint 1922", "SDM Sprint 1923", "SDM Sprint 1924", "SDM Sprint 1925"]
 }
 class TeamHeader extends React.Component {
   render() {
@@ -125,8 +125,9 @@ class LinRegChart extends React.Component {
 
   drawChart() {
     const data = this.props.data
-    // const scopeChange = this.props.data.scopeChange
-    // const sprints = this.props.data.sprints
+    const sprints = this.props.sprints
+    const xLabel = this.props.xLabel
+    const yLabel = this.props.yLabel
     const n = data.length
 
     // Linear Regression using Least Squares for trend line
@@ -161,11 +162,25 @@ class LinRegChart extends React.Component {
     svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(xScale).ticks(n))
+    .call(d3.axisBottom(xScale).ticks(n).tickFormat((d, i) => sprints[i]))
+
+    svg.append("text")             
+      .attr("transform",
+            "translate(" + (width/2) + " ," + (height + margin.bottom - 10) + ")")
+      .style("text-anchor", "middle")
+      .text(xLabel)
 
     svg.append("g")
     .attr("class", "y axis")
-    .call(d3.axisLeft(yScale).ticks(n));
+    .call(d3.axisLeft(yScale).ticks(n))
+
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text(yLabel)
 
     const trendLine = d3.line()
     .x((d, i) => xScale(i))
@@ -210,9 +225,9 @@ function App() {
       <TeamHeader data={headData} team="sdm"/>
       <BarChart data={history} chart="sdmChart"/>
       <hr />
-      <LinRegChart data={linearData.forecastError.map(x => x*100)} chart="sdmForecastErrorLineChart"/>
+      <LinRegChart data={linearData.forecastError.map(x => x*100)} xLabel="Sprint" yLabel="Forecast Error %" sprints={linearData.sprints} chart="sdmForecastErrorLineChart"/>
       <hr />
-      <LinRegChart data={linearData.scopeChange.map(x => x*100)} chart="sdmScopeChangeLineChart"/>
+      <LinRegChart data={linearData.scopeChange.map(x => x*100)} xLabel="Sprint" yLabel="Scope Change %" sprints={linearData.sprints} chart="sdmScopeChangeLineChart"/>
     </div>
   );
 }
