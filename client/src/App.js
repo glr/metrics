@@ -124,21 +124,31 @@ class LinRegChart extends React.Component {
   }
 
   drawChart() {
-    const selector = "." + this.props.chart
-    const forecastError = this.props.data.forecastError
+    const forecastError = this.props.data.forecastError.map(x => x*100)
     // const scopeChange = this.props.data.scopeChange
     // const sprints = this.props.data.sprints
-    const width = 700
-    const height = 300
     const n = forecastError.length
 
     // Linear Regression using Least Squares for trend line
     const xBar = (n-1)/2 
     const yBar = d3.mean(forecastError)
-    const num = forecastError.reduce((acc, y, x) => acc + ((x - xBar) * (y - yBar)))
-    const den = forecastError.reduce((acc, y, x) => acc + ((x - xBar) * (x - xBar)))
+    const num = d3.sum(forecastError.map((y, x) => x * y)) - n*xBar*yBar
+    const den = d3.sum(forecastError.map((y, x) => x * x)) - n*xBar*xBar
     const b = num/den
-    const a = yBar - (b * xBar)
+    const a = yBar - (b * xBar)    
+
+    // Display Code
+    const selector = "." + this.props.chart
+    const margin = {top: 50, right: 50, bottom: 50, left: 50}
+    const width = 700 - margin.right - margin.left
+    const height = 400 - margin.top - margin.bottom
+    const svg = d3.select(selector)
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("margin-left", 100)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     const xScale = d3.scaleLinear()
     .domain([0, n-1])
@@ -148,6 +158,15 @@ class LinRegChart extends React.Component {
     .domain([0, d3.max(forecastError)])
     .range([height, 0])
 
+    svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale))
+
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(d3.axisLeft(yScale));
+
     const trendLine = d3.line()
     .x((d, i) => xScale(i))
     .y((d, i) => yScale(a+(b*i)))
@@ -155,12 +174,6 @@ class LinRegChart extends React.Component {
     const dataLine = d3.line()
     .x((d, i)=> xScale(i)) // set the x values for the line generator
     .y(d => yScale(d)) // set the y values for the line generator
-
-    const svg = d3.select(selector)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .style("margin-left", 100)
 
     svg.append("path")
     .datum(forecastError)
