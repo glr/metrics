@@ -124,16 +124,16 @@ class LinRegChart extends React.Component {
   }
 
   drawChart() {
-    const forecastError = this.props.data.forecastError.map(x => x*100)
+    const data = this.props.data
     // const scopeChange = this.props.data.scopeChange
     // const sprints = this.props.data.sprints
-    const n = forecastError.length
+    const n = data.length
 
     // Linear Regression using Least Squares for trend line
     const xBar = (n-1)/2 
-    const yBar = d3.mean(forecastError)
-    const num = d3.sum(forecastError.map((y, x) => x * y)) - n*xBar*yBar
-    const den = d3.sum(forecastError.map((y, x) => x * x)) - n*xBar*xBar
+    const yBar = d3.mean(data)
+    const num = d3.sum(data.map((y, x) => x * y)) - n*xBar*yBar
+    const den = d3.sum(data.map((y, x) => x * x)) - n*xBar*xBar
     const b = num/den
     const a = yBar - (b * xBar)    
 
@@ -155,17 +155,17 @@ class LinRegChart extends React.Component {
     .range([0, width])
 
     const yScale = d3.scaleLinear()
-    .domain([0, d3.max(forecastError)])
+    .domain([0, d3.max(data)])
     .range([height, 0])
 
     svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(xScale))
+    .call(d3.axisBottom(xScale).ticks(n))
 
     svg.append("g")
     .attr("class", "y axis")
-    .call(d3.axisLeft(yScale));
+    .call(d3.axisLeft(yScale).ticks(n));
 
     const trendLine = d3.line()
     .x((d, i) => xScale(i))
@@ -176,7 +176,7 @@ class LinRegChart extends React.Component {
     .y(d => yScale(d)) // set the y values for the line generator
 
     svg.append("path")
-    .datum(forecastError)
+    .datum(data)
     .attr("fill", "none")
     .attr("stroke", "rgba(0,0,255,1)")
     .attr("stroke-linejoin", "round")
@@ -185,7 +185,7 @@ class LinRegChart extends React.Component {
     .attr("d", trendLine)
     
     svg.append("path")
-    .datum(forecastError)
+    .datum(data)
     .attr("fill", "none")
     .attr("stroke", "rgba(0,0,255,0.25)")
     .attr("stroke-linejoin", "round")
@@ -210,7 +210,9 @@ function App() {
       <TeamHeader data={headData} team="sdm"/>
       <BarChart data={history} chart="sdmChart"/>
       <hr />
-      <LinRegChart data={linearData} chart="sdmLinChart"/>
+      <LinRegChart data={linearData.forecastError.map(x => x*100)} chart="sdmForecastErrorLineChart"/>
+      <hr />
+      <LinRegChart data={linearData.scopeChange.map(x => x*100)} chart="sdmScopeChangeLineChart"/>
     </div>
   );
 }
