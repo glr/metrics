@@ -2,6 +2,7 @@ import React from 'react';
 // import logo from './logo.svg';
 import * as d3 from "d3";
 import './App.css';
+import last from "lodash/last"
 
 const headData = {
   name:"Scrumudgeons",
@@ -219,12 +220,21 @@ class LinRegChart extends React.Component {
 function App() {
   return (
     <div className="App">
-      <TeamHeader data={headData} team="scmdgn"/>
+      {/* <TeamHeader data={headData} team="scmdgn"/>
       <BarChart data={history} chart="scmdgnChart"/>
-      <hr />
-      <TeamHeader data={headData} team="sdm"/>
-      <BarChart data={history} chart="sdmChart"/>
-      <hr />
+      <hr /> */}
+      <TeamHeader data={
+        {
+          name:"Scrumdog Millionaires", 
+          sprint:{
+            name:last(linearData.sprints),
+            accuracy:last(linearData.forecastError),
+            change:last(linearData.scopeChange)
+          }
+        }
+      } team="sdm"/>
+      {/* <BarChart data={history} chart="sdmChart"/>
+      <hr /> */}
       <LinRegChart data={linearData.forecastError.map(x => x*100)} xLabel="Sprint" yLabel="Forecast Error %" sprints={linearData.sprints} chart="sdmForecastErrorLineChart"/>
       <hr />
       <LinRegChart data={linearData.scopeChange.map(x => x*100)} xLabel="Sprint" yLabel="Scope Change %" sprints={linearData.sprints} chart="sdmScopeChangeLineChart"/>
