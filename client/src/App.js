@@ -119,14 +119,14 @@ class BarChart extends React.Component {
   }
 }
 
-class LinRegChart extends React.Component {
+class TrendLineChart extends React.Component {
   componentDidMount() {
     this.drawChart()
   }
 
   drawChart() {
     const data = this.props.data
-    const sprints = this.props.sprints
+    const xTicks = this.props.xTicks
     const xLabel = this.props.xLabel
     const yLabel = this.props.yLabel
     const n = data.length
@@ -163,7 +163,9 @@ class LinRegChart extends React.Component {
     svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(xScale).ticks(n).tickFormat((d, i) => sprints[i]))
+    .call(d3.axisBottom(xScale)
+      .ticks(n)
+      .tickFormat((d, i) => xTicks[i]))
 
     svg.append("text")             
       .attr("transform",
@@ -173,7 +175,8 @@ class LinRegChart extends React.Component {
 
     svg.append("g")
     .attr("class", "y axis")
-    .call(d3.axisLeft(yScale).ticks(n))
+    .call(d3.axisLeft(yScale)
+      .ticks(n))
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
@@ -235,9 +238,9 @@ function App() {
       } team="sdm"/>
       {/* <BarChart data={history} chart="sdmChart"/>
       <hr /> */}
-      <LinRegChart data={linearData.forecastError.map(x => x*100)} xLabel="Sprint" yLabel="Forecast Error %" sprints={linearData.sprints} chart="sdmForecastErrorLineChart"/>
+      <TrendLineChart data={linearData.forecastError.map(x => x*100)} xLabel="Sprint" yLabel="Forecast Error %" xTicks={linearData.sprints} chart="sdmForecastErrorLineChart"/>
       <hr />
-      <LinRegChart data={linearData.scopeChange.map(x => x*100)} xLabel="Sprint" yLabel="Scope Change %" sprints={linearData.sprints} chart="sdmScopeChangeLineChart"/>
+      <TrendLineChart data={linearData.scopeChange.map(x => x*100)} xLabel="Sprint" yLabel="Scope Change %" xTicks={linearData.sprints} chart="sdmScopeChangeLineChart"/>
     </div>
   );
 }

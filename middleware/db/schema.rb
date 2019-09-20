@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_165540) do
+ActiveRecord::Schema.define(version: 2019_09_20_173613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "metrics_sprints", force: :cascade do |t|
+    t.string "name"
+    t.text "goal"
+    t.float "scope_change_pct"
+    t.float "forecast_error_pct"
+    t.float "story_pct"
+    t.float "spike_pct"
+    t.float "bug_pct"
+    t.float "data_fix_pct"
+    t.float "operational_work_pct"
+    t.float "incident_pct"
+    t.float "technical_debt_pct"
+    t.bigint "team_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["team_id"], name: "index_metrics_sprints_on_team_id"
+  end
 
   create_table "teams", force: :cascade do |t|
     t.integer "jid"
@@ -25,4 +43,5 @@ ActiveRecord::Schema.define(version: 2019_09_09_165540) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "metrics_sprints", "teams"
 end

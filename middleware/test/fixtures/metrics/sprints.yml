@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: 
+  goal: 
+  scope_change_pct,: MyString
+  forecast_error_pct,: MyString
+  story_pct,: MyString
+  spike_pct,: MyString
+  bug_pct,: MyString
+  data_fix_pct,: MyString
+  operational_work_pct,: MyString
+  incident_pct,: MyString
+  technical_debt_pct: MyString
+  team: one
+
+two:
+  name: 
+  goal: 
+  scope_change_pct,: MyString
+  forecast_error_pct,: MyString
+  story_pct,: MyString
+  spike_pct,: MyString
+  bug_pct,: MyString
+  data_fix_pct,: MyString
+  operational_work_pct,: MyString
+  incident_pct,: MyString
+  technical_debt_pct: MyString
+  team: two
