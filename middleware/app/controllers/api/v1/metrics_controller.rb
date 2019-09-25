@@ -1,4 +1,4 @@
-require 'httparty'
+# require 'httparty'
 module Api
     module V1
         class MetricsController < ActionController::API
@@ -11,6 +11,11 @@ module Api
               render json:obj, status:200
             end
 
+            def self.teamMetricsRetrieve
+              self.jira("scmdgn")
+              self.jira("sdm")
+            end
+
             def self.jira(team_selection)
               
               # TODO: this is to make it easy to specify a team... probably a better way to do this
@@ -21,7 +26,8 @@ module Api
               
               # which team is this for?
               team = Team.find(team_id)
-              
+              tjid = team.jid.to_s
+
               # what was the last sprint we saved?
               last_sprint = Metrics::Sprint.where(team_id: team_id).order(:created_at).last()
               
@@ -31,7 +37,7 @@ module Api
               # 1. retrieve the last few closed sprints, ~6 or so
               ## need to move the auth token to env vars and update to send them via docker env. ($JIRA, $JIRAURL)
               # jira returns 50 at a time by default, you can set pagination size with maxResults, and will need to figure out paging using some startAt + maxResults looping logic
-              qurl = 'https://sparefoot.atlassian.net/rest/agile/latest/board/221/sprint?state=closed'
+              qurl = 'https://sparefoot.atlassian.net/rest/agile/latest/board/' + tjid  + '/sprint?state=closed'
               response = HTTParty.get(qurl, {
                 headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
               })
@@ -45,10 +51,12 @@ module Api
               #
               updates = []
               sprints.reverse.each do |x|
-                if last_sprint == nil || x[:id] != last_sprint.jid
-                  updates.push x[:id]
-                elsif last_sprint.jid == x[:id]
-                  break
+                if x[:originBoardId] == tjid.to_i
+                  if last_sprint == nil || x[:id] != last_sprint.jid
+                    updates.push x[:id]
+                  elsif last_sprint.jid == x[:id]
+                    break
+                  end
                 end
               end
               
@@ -56,21 +64,8 @@ module Api
               #    a. retrieve the data from jira
               #    b. create sprint with the response
               # reponse = ...
-              #
-              # t.string "name"
-              # t.text "goal"
-              # t.float "scope_change_pct"
-              # t.float "forecast_error_pct"
-              # t.float "story_pct"
-              # t.float "spike_pct"
-              # t.float "bug_pct"
-              # t.float "data_fix_pct"
-              # t.float "operational_work_pct"
-              # t.float "incident_pct"
-              # t.float "technical_debt_pct"
 
-              tjid = team.jid.to_s
-              updates.each do |x|
+              updates.reverse.each do |x|
                 types = {
                   "Story"=>nil,
                   "Spike"=>nil,
@@ -83,8 +78,8 @@ module Api
 
                 sid = x.to_s
                 sprint = Metrics::Sprint.new()
-                sprint.jid = sid
-                sprint.team_id = tjid
+                sprint.jid = sid.to_i
+                sprint.team_id = team_id.to_i
 
                 # scope change %
                 qurl = 'https://sparefoot.atlassian.net/rest/greenhopper/1.0/gadgets/sprints/health?rapidViewId=' + tjid + '&sprintId=' + sid
@@ -125,9 +120,8 @@ module Api
                 sprint.operational_work_pct = types["Operational Work"]/total_count
                 sprint.incident_pct = types["Incident"]/total_count
                 sprint.technical_debt_pct = types["Technical Debt"]/total_count
-                
-                p sprint
-                # sprint.save()
+                # p sprint
+                p sprint.save()
               end 
             end
         end
