@@ -45,12 +45,12 @@ module Api
               #
               updates = []
               sprints.reverse.each do |x|
-                # p x[:name], x[:id]
-                if last_sprint == nil || x[:id] == last_sprint.jid
+                if last_sprint == nil || x[:id] != last_sprint.jid
                   updates.push x[:id]
+                elsif last_sprint.jid == x[:id]
+                  break
                 end
               end
-              
               
               # 4. for each of the sprints we need to save, 
               #    a. retrieve the data from jira
@@ -68,24 +68,67 @@ module Api
               # t.float "operational_work_pct"
               # t.float "incident_pct"
               # t.float "technical_debt_pct"
-              # t.bigint "team_id", null: false
-              # t.integer "jid"
-              
+
+              tjid = team.jid.to_s
               updates.each do |x|
+                types = {
+                  "Story"=>nil,
+                  "Spike"=>nil,
+                  "Bug"=>nil,
+                  "Data Fix"=>nil,
+                  "Operational Work"=>nil,
+                  "Incident"=>nil,
+                  "Technical Debt"=>nil
+                }
+
+                sid = x.to_s
+                sprint = Metrics::Sprint.new()
+                sprint.jid = sid
+                sprint.team_id = tjid
+
                 # scope change %
-                # https://sparefoot.atlassian.net/rest/greenhopper/1.0/gadgets/sprints/health?rapidViewId=221&sprintId=905
-                #
-                # sprint metrics
-                # https://sparefoot.atlassian.net/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=221&sprintId=905
-                # 
-                qurl = ''
+                qurl = 'https://sparefoot.atlassian.net/rest/greenhopper/1.0/gadgets/sprints/health?rapidViewId=' + tjid + '&sprintId=' + sid
                 response = HTTParty.get(qurl, {
                   headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
                 })
-                sprint = Metrics::Sprint.new()
-                p sprint
-              end 
+                sprint.scope_change_pct = (JSON.parse(response.body).with_indifferent_access[:sprintMetrics].last()["value"].to_f - 100) / 100 # , response.code 
+                
+                # sprint metrics
+                qurl = 'https://sparefoot.atlassian.net/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=' + tjid + '&sprintId=' + sid
+                response = HTTParty.get(qurl, {
+                  headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                })
+                sprint_data = JSON.parse(response.body).with_indifferent_access
+                sprint_metrics = sprint_data[:contents]
+                total_initial = (sprint_metrics["completedIssuesInitialEstimateSum"]["value"] || 0.0) + 
+                  (sprint_metrics["issuesNotCompletedInitialEstimateSum"]["value"] || 0.0) + 
+                  (sprint_metrics["puntedIssuesInitialEstimateSum"]["value"] || 0.0)
+                total_complete = (sprint_metrics["completedIssuesEstimateSum"]["value"] || 0.0)
+                forecast_error = total_initial - total_complete
+                sprint.forecast_error_pct = (total_complete == 0.0) ? 0.0 : forecast_error/total_complete
+                sprint.goal = sprint_data[:sprint][:goal]
+                sprint.name = sprint_data[:sprint][:name]
 
+                # issue type counts, iterate over issueTypes to get counts
+                types.each do |t, v|
+                  qurl = 'https://sparefoot.atlassian.net/rest/agile/latest/board/' + tjid + '/sprint/' + sid + '/issue?fields=none&jql=issuetype="' + URI.escape(t) + '"'
+                  response = HTTParty.get(qurl, {
+                    headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                  })
+                  types[t] = JSON.parse(response.body).with_indifferent_access[:total].to_f 
+                end
+                total_count = types.values.reduce { |sum, i| sum + (i == nil ? 0 : i) }
+                sprint.story_pct = types["Story"]/ total_count
+                sprint.spike_pct = types["Spike"]/total_count
+                sprint.bug_pct = types["Bug"]/total_count
+                sprint.data_fix_pct = types["Data Fix"]/total_count
+                sprint.operational_work_pct = types["Operational Work"]/total_count
+                sprint.incident_pct = types["Incident"]/total_count
+                sprint.technical_debt_pct = types["Technical Debt"]/total_count
+                
+                p sprint
+                # sprint.save()
+              end 
             end
         end
     end
