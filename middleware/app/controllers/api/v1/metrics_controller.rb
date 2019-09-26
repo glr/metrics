@@ -1,4 +1,3 @@
-# require 'httparty'
 module Api
     module V1
         class MetricsController < ActionController::API
@@ -99,7 +98,7 @@ module Api
                   (sprint_metrics["issuesNotCompletedInitialEstimateSum"]["value"] || 0.0) + 
                   (sprint_metrics["puntedIssuesInitialEstimateSum"]["value"] || 0.0)
                 total_complete = (sprint_metrics["completedIssuesEstimateSum"]["value"] || 0.0)
-                forecast_error = total_initial - total_complete
+                forecast_error = (total_initial - total_complete).abs
                 sprint.forecast_error_pct = (total_complete == 0.0) ? 0.0 : forecast_error/total_complete
                 sprint.goal = sprint_data[:sprint][:goal]
                 sprint.name = sprint_data[:sprint][:name]
