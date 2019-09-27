@@ -36,8 +36,8 @@ class StackedBarChart extends React.Component {
     
     // Display Code
     const selector = "." + this.props.chart
-    const margin = { top: 50, right: 50, bottom: 50, left: 50 }
-    const width = 700 - margin.right - margin.left
+    const margin = { top: 50, right: 150, bottom: 50, left: 50 }
+    const width = 800 - margin.right - margin.left
     const height = 400 - margin.top - margin.bottom
     const svg = d3.select(selector)
       .append("svg")
@@ -51,7 +51,7 @@ class StackedBarChart extends React.Component {
       .domain(xTicks)
       .rangeRound([0, width])
       .paddingOuter(0.1)
-      .paddingInner(0.02)
+      .paddingInner(0.15)
     const yScale = d3.scaleLinear()
       .domain([0, 100])
       .range([height, 0])
@@ -93,15 +93,51 @@ class StackedBarChart extends React.Component {
         .attr("y", d => yScale(d3.sum(d)))
         .attr("height", d => yScale(first(d)) - yScale(d3.sum(d)))
         .attr("width", xScale.bandwidth())
-        // .on("mouseover", function() { tooltip.style("display", null); })
-        // .on("mouseout", function() { tooltip.style("display", "none"); })
-        // .on("mousemove", function(d) {
-        //   var xPosition = d3.mouse(this)[0] - 15;
-        //   var yPosition = d3.mouse(this)[1] - 25;
-        //   tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-        //   tooltip.select("text").text(d.y);
+        // .on("mouseover", () => tooltip.style("display", null))
+        // .on("mouseout", () => tooltip.style("display", "none"))
+        // .on("mousemove", d => {
+        //   let xPosition = d3.mouse(this)[0] - 15
+        //   let yPosition = d3.mouse(this)[1] - 25
+        //   tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
+        //   tooltip.select("text").text(last(d))
         // })
+    // Draw legend
+    const legend = svg.selectAll(".legend")
+      .data(colors)
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
+ 
+    legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", (d, i) => colors(i))
+ 
+    legend.append("text") 
+      .attr("x", width + 5)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "start")
+      .text((d, i) => Object.keys(first(barData))[i])
 
+    // // Prep the tooltip bits, initial display is hidden
+    // const tooltip = svg.append("g")
+    //   .attr("class", "tooltip")
+    //   .style("display", "none");
+        
+    // tooltip.append("rect")
+    //   .attr("width", 30)
+    //   .attr("height", 20)
+    //   .attr("fill", "white")
+    //   .style("opacity", 0.5);
+
+    // tooltip.append("text")
+    //   .attr("x", 15)
+    //   .attr("dy", "1.2em")
+    //   .style("text-anchor", "middle")
+    //   .attr("font-size", "12px")
+    //   .attr("font-weight", "bold");
   }
 
   render() {
