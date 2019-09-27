@@ -1,8 +1,10 @@
 // import logo from './logo.svg';
-import * as d3 from "d3";
-import last from "lodash/last";
-import React from 'react';
-import './App.css';
+import * as d3 from "d3"
+import last from "lodash/last"
+import size from "lodash/size"
+import first from "lodash/first"
+import React from 'react'
+import './App.css'
 
 class TeamHeader extends React.Component {
   render() {
@@ -21,43 +23,85 @@ class TeamHeader extends React.Component {
   }
 }
 
-class BarChart extends React.Component {
+class StackedBarChart extends React.Component {
   componentDidMount() {
     this.drawChart();
   }
 
   drawChart() {
-    const barData = this.props.data.map(item => ({
-      forecast: item.forecast,
-      actual: item.actual
-    })
-    )
-    // const accuracyData = this.props.data.map(item => item.accuracy)
-    // const changeData = this.props.data.map(item => item.change)
-    const keys = Object.keys(barData[0])
-    const colors = { forecast: "green", actual: "blue" }
-    const bars = { forecast: 0, actual: 30 }
-    const width = barData.length * 75
+    const barData = this.props.data
+    const n = barData.length
+    const xTicks = this.props.xTicks
+    const xLabel = this.props.xLabel
+    
+    // Display Code
     const selector = "." + this.props.chart
-
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 }
+    const width = 700 - margin.right - margin.left
+    const height = 400 - margin.top - margin.bottom
     const svg = d3.select(selector)
       .append("svg")
-      .attr("width", width)
-      .attr("height", 300)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
       .style("margin-left", 100)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-    svg.selectAll("g")
-      .data(barData)
-      .join("g")
-      .attr("transform", (d, i) => `translate(${i * 75},0)`)
-      .selectAll("rect")
-      .data(d => keys.map(key => ({ key, value: d[key] })))
-      .join("rect")
-      .attr("x", d => bars[d.key])
-      .attr("y", d => 300 - 10 * d.value)
-      .attr("width", 29)
-      .attr("height", d => 10 * d.value)
-      .attr("fill", d => colors[d.key])
+    const xScale = d3.scaleBand()
+      .domain(xTicks)
+      .rangeRound([0, width])
+      .paddingOuter(0.1)
+      .paddingInner(0.02)
+    const yScale = d3.scaleLinear()
+      .domain([0, 100])
+      .range([height, 0])
+
+    const colors = d3.scaleOrdinal(d3.schemeSpectral[size(last(barData))])
+
+    const stack = d3.stack()
+      .keys(Object.keys(last(barData)))
+      .order(d3.stackOrderNone)
+      .offset(d3.stackOffsetNone)
+
+    const series = stack(barData)
+    
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(xScale)
+        .ticks(n)
+        .tickFormat((d, i) => xTicks[i]))
+
+    svg.append("text")
+      .attr("transform",
+        "translate(" + (width / 2) + " ," + (height + margin.bottom - 10) + ")")
+      .style("text-anchor", "middle")
+      .text(xLabel)
+    
+    const groups = svg.selectAll("g.percent")
+      .data(series)
+      .enter()
+      .append("g")
+        .attr("class", "percent")
+        .style("fill", (d, i) => colors(i))
+
+    const rect = groups.selectAll("rect")
+        .data(d => d)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => xScale(xTicks[i]))
+        .attr("y", d => yScale(d3.sum(d)))
+        .attr("height", d => yScale(first(d)) - yScale(d3.sum(d)))
+        .attr("width", xScale.bandwidth())
+        // .on("mouseover", function() { tooltip.style("display", null); })
+        // .on("mouseout", function() { tooltip.style("display", "none"); })
+        // .on("mousemove", function(d) {
+        //   var xPosition = d3.mouse(this)[0] - 15;
+        //   var yPosition = d3.mouse(this)[1] - 25;
+        //   tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+        //   tooltip.select("text").text(d.y);
+        // })
+
   }
 
   render() {
@@ -193,13 +237,13 @@ class TeamMetrics extends React.Component {
         metricData.scopeChange.push(d.scope_change_pct * 100)
         metricData.forecastError.push(d.forecast_error_pct * 100)
         metricData.typeCounts.push({
-          bug: d.bug_pct * 100,
           story: d.story_pct * 100,
+          bug: d.bug_pct * 100,
           spike: d.spike_pct * 100,
+          techDebt: d.technical_debt_pct * 100,
           incident: d.incident_pct * 100,
           opWork: d.operational_work_pct * 100,
           dataFix: d.data_fix_pct * 100,
-          techDebt: d.technical_debt_pct * 100
         })
       })
       const headerMetrics = {
