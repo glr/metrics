@@ -8,14 +8,14 @@ class TeamHeader extends React.Component {
   render() {
     const data = this.props.data
     return (
-      <div className={this.props.team}>
-        <div>Team: {data.name}</div>
-        <div>Sprint: {data.sprint.name}</div>
-        <div>Goals: {data.sprint.goals}</div>
-        <div>Average Forecast Accuracy: {data.sprint.accuracy * 100}%</div>
-        <div>Forecast Accuracy σ: {data.sprint.accuracy * 100}%</div>
-        <div>Average Scope Change: {data.sprint.change * 100}%</div>
-        <div>Scope Change σ: {data.sprint.change * 100}%</div>
+      <div className={data.teamName.replace(/\s/g, '') + "Header"}>
+        <div>Team: {data.teamName}</div>
+        <div>Sprint: {data.lastSprintName}</div>
+        <div>Goal: {data.lastSprintGoal}</div>
+        <div>Average Forecast Accuracy: {Math.round(data.avgForecastError)}%</div>
+        <div>Forecast Accuracy σ: {Math.round(data.forecastStdDev)}</div>
+        <div>Average Scope Change: {Math.round(data.avgScopeChange)}%</div>
+        <div>Scope Change σ: {Math.round(data.scopeChangeStdDev)}</div>
       </div>
     )
   }
@@ -171,20 +171,7 @@ class TrendLineChart extends React.Component {
 class TeamMetrics extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      teamName: "No team name",
-      latestSprintName: "No latest sprint name",
-      avgForecastError: 0,
-      forecastStdDev: 0,
-      avgScopeChange: 0,
-      scopeChangeStdDev: 0,
-      metricData:{
-        sprints: [],
-        scopeChange: [],
-        forecastError: [],
-        typeCounts: []
-      }
-    }
+    this.state = {}
   }
 
   componentDidMount() {
@@ -206,30 +193,34 @@ class TeamMetrics extends React.Component {
         metricData.scopeChange.push(d.scope_change_pct * 100)
         metricData.forecastError.push(d.forecast_error_pct * 100)
         metricData.typeCounts.push({
-          bug: d.bug_pct,
-          story: d.story_pct,
-          spike: d.spike_pct,
-          incident: d.incident_pct,
-          opWork: d.operational_work_pct,
-          dataFix: d.data_fix_pct,
-          techDebt: d.technical_debt_pct
+          bug: d.bug_pct * 100,
+          story: d.story_pct * 100,
+          spike: d.spike_pct * 100,
+          incident: d.incident_pct * 100,
+          opWork: d.operational_work_pct * 100,
+          dataFix: d.data_fix_pct * 100,
+          techDebt: d.technical_debt_pct * 100
         })
       })
-      const teamMetrics = {
-        latestSprintName: lastSprint.name,
+      const headerMetrics = {
+        teamName: this.props.teamName,
+        lastSprintName: lastSprint.name,
+        lastSprintGoal: lastSprint.goal,
         avgForecastError: d3.mean(metricData.forecastError),
         forecastStdDev: d3.deviation(metricData.forecastError),
         avgScopeChange: d3.mean(metricData.scopeChange),
         scopeChangeStdDev: d3.deviation(metricData.scopeChange),
-        metricData: metricData
       }
       this.setState({
         teamMetrics:(
           <div>
-            <hr />
-            <TrendLineChart data={metricData.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={metricData.sprints} chart={this.props.teamName + "ForecastErrorLineChart"} />
-            <hr />
-            <TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName + "ScopeChangeLineChart"} />
+            <TeamHeader data={headerMetrics} />
+            <p />
+            <TrendLineChart data={metricData.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
+            <p />
+            <TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+            <p />
+            <StackedBarChart data={metricData.typeCounts} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} />
           </div>
         )
       })
