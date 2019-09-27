@@ -1,7 +1,6 @@
 // import logo from './logo.svg';
 import * as d3 from "d3"
 import last from "lodash/last"
-import size from "lodash/size"
 import first from "lodash/first"
 import React from 'react'
 import './App.css'
@@ -52,12 +51,14 @@ class StackedBarChart extends React.Component {
       .rangeRound([0, width])
       .paddingOuter(0.1)
       .paddingInner(0.15)
+
     const yScale = d3.scaleLinear()
       .domain([0, 100])
       .range([height, 0])
 
-    const colors = d3.scaleOrdinal(d3.schemeSpectral[size(last(barData))])
-
+    // const colors = d3.scaleOrdinal().domain(last(barData)).range(d3.interpolatePlasma)
+    const colors = d3.scaleOrdinal(d3.schemeSet1)
+    
     const stack = d3.stack()
       .keys(Object.keys(last(barData)))
       .order(d3.stackOrderNone)
@@ -90,17 +91,17 @@ class StackedBarChart extends React.Component {
         .enter()
         .append("rect")
         .attr("x", (d, i) => xScale(xTicks[i]))
-        .attr("y", d => yScale(d3.sum(d)))
-        .attr("height", d => yScale(first(d)) - yScale(d3.sum(d)))
+        .attr("y", d => yScale(d[1]))
+        .attr("height", d => yScale(d[0]) - yScale(d[1]))
         .attr("width", xScale.bandwidth())
-        // .on("mouseover", () => tooltip.style("display", null))
-        // .on("mouseout", () => tooltip.style("display", "none"))
-        // .on("mousemove", d => {
-        //   let xPosition = d3.mouse(this)[0] - 15
-        //   let yPosition = d3.mouse(this)[1] - 25
-        //   tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
-        //   tooltip.select("text").text(last(d))
-        // })
+        .on("mouseover", () => tooltip.style("display", null))
+        .on("mouseout", () => tooltip.style("display", "none"))
+        .on("mousemove", function (d) {
+          let xPosition = d3.mouse(this)[0] - 15
+          let yPosition = d3.mouse(this)[1] - 25
+          tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
+          tooltip.select("text").text((d[1]-d[0]).toFixed(2) + "%")
+        })
     // Draw legend
     const legend = svg.selectAll(".legend")
       .data(colors)
@@ -121,23 +122,23 @@ class StackedBarChart extends React.Component {
       .style("text-anchor", "start")
       .text((d, i) => Object.keys(first(barData))[i])
 
-    // // Prep the tooltip bits, initial display is hidden
-    // const tooltip = svg.append("g")
-    //   .attr("class", "tooltip")
-    //   .style("display", "none");
+    // Prep the tooltip bits, initial display is hidden
+    const tooltip = svg.append("g")
+      .attr("class", "tooltip")
+      .style("display", "none");
         
-    // tooltip.append("rect")
-    //   .attr("width", 30)
-    //   .attr("height", 20)
-    //   .attr("fill", "white")
-    //   .style("opacity", 0.5);
+    tooltip.append("rect")
+      .attr("width", 50)
+      .attr("height", 20)
+      .attr("fill", "white")
+      .style("opacity", 0.5);
 
-    // tooltip.append("text")
-    //   .attr("x", 15)
-    //   .attr("dy", "1.2em")
-    //   .style("text-anchor", "middle")
-    //   .attr("font-size", "12px")
-    //   .attr("font-weight", "bold");
+    tooltip.append("text")
+      .attr("x", 25)
+      .attr("dy", "1.2em")
+      .style("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .attr("font-weight", "bold");
   }
 
   render() {
