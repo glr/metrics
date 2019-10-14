@@ -10,13 +10,16 @@ class TeamHeader extends React.Component {
     const data = this.props.data
     return (
       <div className={data.teamName.replace(/\s/g, '') + "Header"}>
-        <div>Team: {data.teamName}</div>
-        <div>Sprint: {data.lastSprintName}</div>
-        <div>Goal: {data.lastSprintGoal}</div>
-        <div>Average Forecast Accuracy: {Math.round(data.avgForecastError)}%</div>
-        <div>Forecast Accuracy σ: {Math.round(data.forecastStdDev)}</div>
-        <div>Average Scope Change: {Math.round(data.avgScopeChange)}%</div>
-        <div>Scope Change σ: {Math.round(data.scopeChangeStdDev)}</div>
+        <div><strong>Team:</strong> {data.teamName}</div>
+        <p />
+        <div><strong>Sprint:</strong> {data.lastSprintName}</div>
+        <div><strong>Goal:</strong> {data.lastSprintGoal}</div>
+        <p />
+        <div><strong>Average Forecast Error:</strong> {Math.round(data.avgForecastError)}%</div>
+        <div><strong>Forecast Error σ:</strong> {Math.round(data.forecastStdDev)}%</div>
+        <p />
+        <div><strong>Average Scope Change:</strong> {Math.round(data.avgScopeChange)}%</div>
+        <div><strong>Scope Change σ:</strong> {Math.round(data.scopeChangeStdDev)}%</div>
       </div>
     )
   }
@@ -295,6 +298,7 @@ class TeamMetrics extends React.Component {
       this.setState({
         teamMetrics:(
           <div>
+            <hr />
             <TeamHeader data={headerMetrics} />
             <p />
             <TrendLineChart data={metricData.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
@@ -302,6 +306,7 @@ class TeamMetrics extends React.Component {
             <TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
             <p />
             <StackedBarChart data={metricData.typeCounts} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} />
+            <hr />
           </div>
         )
       })
