@@ -431,27 +431,26 @@ class EpicsMetrics extends React.Component {
   }
 
   componentDidMount() {
-    // temp demo data
-    const wip = {bigRocks:[3,1],other:[3,5]}
-    const todo = {bigRocks:[0,2],other:[52,34]}
-    const dates = ["September 2019", "October 2019"]
-    // const wip = {bigRocks:[null,null,null,3,3,1],other:[null,null,null,6,3,5]}
-    // const todo = {bigRocks:[null,null,null,0,0,2],other:[null,null,null,53,52,34]}
-    // const dates = [null,null,null,"August 2019", "September 2019", "October 2019"]
-
-    const epicCharts = (
-      <div>
-        {/* //[[3,6],[3, 3],[1,5]] */}
-        Big Rocks vs. non-Big Rocks - In Progress
-        <DualLineChart data={wip} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
-        <p />
-        {/* //[0,52],[0, 52],[2,34] */}
-        Big Rocks vs. non-Big Rocks - To Do
-        <DualLineChart data={todo} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo2" />
-      </div>
-    )
-    this.setState({
-      epicCharts: epicCharts
+    const epicData = fetch('http://localhost:3000/api/v1/metrics/epics')
+    .then(results => {
+      return results.json()
+    })
+    .then(data => {
+      const wip = data.wip
+      const todo = data.todo
+      const dates = data.dates
+      const epicCharts = (
+        <div>
+          Big Rocks vs. non-Big Rocks - In Progress
+          <DualLineChart data={wip} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
+          <p />
+          Big Rocks vs. non-Big Rocks - To Do
+          <DualLineChart data={todo} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
+        </div>
+      )
+      this.setState({
+        epicCharts: epicCharts
+      })
     })
   }
 
