@@ -10,9 +10,45 @@ module Api
               render json:obj, status:200
             end
 
+            def epics
+              data = {
+                wip: {bigRocks:[3,1],other:[3,5]},
+                todo: {bigRocks:[0,2],other:[52,34]},
+                dates: ["September 2019", "October 2019"]
+              }
+              render json:data, status:200
+            end
+
             def self.teamMetricsRetrieve
               self.jira("scmdgn")
               self.jira("sdm")
+              #todo: self.t3()
+            end
+
+            def self.epicMetricsRetrieve
+              #todo:
+              # // const baseUrl = 'https://sparefoot.atlassian.net/rest/api/latest/search?jql=project = SL and type = epic and status='
+              # // const lrInProgressUrl = baseUrl + '"In Progress" and (labels not in (st_big_rock) or labels is empty)'
+              # // const brInProgressUrl = baseUrl + '"In Progress" and (labels in (st_big_rock))'
+              # // const lrToDoURL = baseUrl + '"To Do" and (labels not in (st_big_rock) or labels is empty)'
+              # // const brToDoUrl = baseUrl + '"To Do" and (labels in (st_big_rock))'
+              # // const tok = 'Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU='
+              
+              # // const lrInProgress = fetch(lrInProgressUrl, {
+              # //   mode: 'no-cors',
+              # //   headers: {
+              # //     'Authorization': tok
+              # //   }
+              # // }).then(results => {
+              # //   return results.json()
+              # // }).then(data => {
+              # //   console.log(data)
+              # // })
+            end
+
+            def self.metricsRetrieve
+              self.teamMetricsRetrieve()
+              self.epicMetricsRetrieve()
             end
 
             def self.jira(team_selection)
