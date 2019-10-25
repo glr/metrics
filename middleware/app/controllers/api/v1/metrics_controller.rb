@@ -11,11 +11,27 @@ module Api
             end
 
             def epics
+              obj = Metrics::Epic.last(3)
+
               data = {
-                wip: {bigRocks:[3,1],other:[3,5]},
-                todo: {bigRocks:[0,2],other:[52,34]},
-                dates: ["September 2019", "October 2019"]
+                wip: {
+                  bigRocks:[],
+                  other:[]
+                },
+                todo: {
+                  bigRocks:[],
+                  other:[]},
+                dates: []
               }
+
+              obj.each { |d|
+                data[:wip][:bigRocks].push d.wip_bigrocks
+                data[:todo][:bigRocks].push d.todo_bigrocks
+                data[:wip][:other].push d.wip_other
+                data[:todo][:other].push d.todo_other
+                data[:dates].push d.report_period
+              }
+
               render json:data, status:200
             end
 

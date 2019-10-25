@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  wip_bigrocks: 1
+  wip_other: 1
+  todo_bigrocks: 1
+  todo_other: 1
+  report_period: MyString
+
+two:
+  wip_bigrocks: 1
+  wip_other: 1
+  todo_bigrocks: 1
+  todo_other: 1
+  report_period: MyString
