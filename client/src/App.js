@@ -1,4 +1,4 @@
-// import logo from './logo.svg';
+// import logo from './logo.svg'
 import * as d3 from "d3"
 import last from "lodash/last"
 import first from "lodash/first"
@@ -27,7 +27,7 @@ class TeamHeader extends React.Component {
 
 class StackedBarChart extends React.Component {
   componentDidMount() {
-    this.drawChart();
+    this.drawChart()
   }
 
   drawChart() {
@@ -90,9 +90,9 @@ class StackedBarChart extends React.Component {
         .style("fill", (d, i) => colors(i))
 
     const rect = groups.selectAll("rect")
-        .data(d => d)
-        .enter()
-        .append("rect")
+      .data(d => d)
+      .enter()
+      .append("rect")
         .attr("x", (d, i) => xScale(xTicks[i]))
         .attr("y", d => yScale(d[1]))
         .attr("height", d => yScale(d[0]) - yScale(d[1]))
@@ -105,19 +105,21 @@ class StackedBarChart extends React.Component {
           tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
           tooltip.select("text").text((d[1]-d[0]).toFixed(2) + "%")
         })
+
     // Draw legend
     const legend = svg.selectAll(".legend")
       .data(colors)
-      .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
- 
+      .enter()
+      .append("g")
+        .attr("class", "legend")
+        .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
+
     legend.append("rect")
       .attr("x", width - 18)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", (d, i) => colors(i))
- 
+
     legend.append("text") 
       .attr("x", width + 5)
       .attr("y", 9)
@@ -128,20 +130,20 @@ class StackedBarChart extends React.Component {
     // Prep the tooltip bits, initial display is hidden
     const tooltip = svg.append("g")
       .attr("class", "tooltip")
-      .style("display", "none");
-        
+      .style("display", "none")
+
     tooltip.append("rect")
       .attr("width", 50)
       .attr("height", 20)
       .attr("fill", "white")
-      .style("opacity", 0.5);
+      .style("opacity", 0.5)
 
     tooltip.append("text")
       .attr("x", 25)
       .attr("dy", "1.2em")
       .style("text-anchor", "middle")
       .attr("font-size", "12px")
-      .attr("font-weight", "bold");
+      .attr("font-weight", "bold")
   }
 
   render() {
@@ -177,12 +179,12 @@ class TrendLineChart extends React.Component {
     const width = 700 - margin.right - margin.left
     const height = 400 - margin.top - margin.bottom
     const svg = d3.select(selector)
-      .append("svg")
+    .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .style("margin-left", 100)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     const xScale = d3.scaleLinear()
       .domain([0, n - 1])
@@ -277,7 +279,7 @@ class DualLineChart extends React.Component {
       .attr("height", height + margin.top + margin.bottom)
       .style("margin-left", 100)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     const xScale = d3.scaleLinear()
       .domain([0, n])
@@ -303,7 +305,6 @@ class DualLineChart extends React.Component {
         "translate(" + (width / 2) + " ," + (height + margin.bottom - 10) + ")")
       .style("text-anchor", "middle")
       .text(xLabel)
-
 
     const tks = last(yScale.domain())
     
@@ -359,7 +360,7 @@ class DualLineChart extends React.Component {
       .attr("stroke-width", 2)
       .attr("d", dataLine)
 
-      svg.selectAll(".dot")
+    svg.selectAll(".dot")
       .data(other)
       .enter()
       .append("circle")
@@ -380,7 +381,7 @@ class DualLineChart extends React.Component {
     const tooltip = svg.append("g")
       .attr("class", "tooltip")
       .style("display", "none")
-        
+
     tooltip.append("rect")
       .attr("width", 50)
       .attr("height", 20)
@@ -400,21 +401,21 @@ class DualLineChart extends React.Component {
     const legend = svg.selectAll(".legend")
     .data(Object.keys(data))
     .enter().append("g")
-    .attr("class", "legend")
-    .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
+      .attr("class", "legend")
+      .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
 
-  legend.append("rect")
-    .attr("x", width - 18)
-    .attr("width", 18)
-    .attr("height", 18)
-    .style("fill", (d, i) => colors(i))
+    legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", (d, i) => colors(i))
 
-  legend.append("text") 
-    .attr("x", width + 5)
-    .attr("y", 9)
-    .attr("dy", ".35em")
-    .style("text-anchor", "start")
-    .text((d, i) => Object.keys(data)[i])
+    legend.append("text") 
+      .attr("x", width + 5)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "start")
+      .text((d, i) => Object.keys(data)[i])
   }
 
   render() {
@@ -570,7 +571,7 @@ function App() {
       <hr />
       <EpicsMetrics />
     </div>
-  );
+  )  
 }
 
 export default App
