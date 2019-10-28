@@ -20,13 +20,14 @@ class EpicsMetrics extends React.Component {
       const wip = data.wip
       const todo = data.todo
       const dates = data.dates
+      const legend = ["Big Rocks", "Other"]
       const epicCharts = (
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
-          <Component.DualLineChart data={wip} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
+          <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
           Big Rocks vs. non-Big Rocks - To Do
-          <Component.DualLineChart data={todo} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
+          <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
         </div>
       )
       this.setState({

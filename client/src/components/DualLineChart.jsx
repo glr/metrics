@@ -8,9 +8,9 @@ export class DualLineChart extends React.Component {
   }
 
   drawChart() {
-    const data = this.props.data
-    const bigRocks = data.bigRocks
-    const other = data.other
+    const legendText = this.props.legend
+    const lineA = this.props.lineA
+    const lineB = this.props.lineB
     const xTicks = this.props.xTicks
     const xLabel = this.props.xLabel
     const yLabel = this.props.yLabel
@@ -34,7 +34,7 @@ export class DualLineChart extends React.Component {
       .range([0, width])
 
     const yScale = d3.scaleLinear()
-      .domain([0, Math.max(d3.max(bigRocks),d3.max(other))]).nice()
+      .domain([0, Math.max(d3.max(lineA),d3.max(lineB))]).nice()
       .range([height, 0])
 
     const aScale = d3.scaleLinear()
@@ -74,7 +74,7 @@ export class DualLineChart extends React.Component {
       .y(d => yScale(d)) // set the y values for the line generator
 
     svg.append("path")
-      .datum(bigRocks)
+      .datum(lineA)
       .attr("fill", "none")
       .attr("stroke", "rgba(0,0,255,1)")
       .attr("stroke-linejoin", "round")
@@ -83,7 +83,7 @@ export class DualLineChart extends React.Component {
       .attr("d", dataLine)
 
     svg.selectAll(".dot")
-      .data(bigRocks)
+      .data(lineA)
       .enter()
       .append("circle")
         .attr("fill", "rgba(0,0,255,1)")
@@ -100,7 +100,7 @@ export class DualLineChart extends React.Component {
         })
 
     svg.append("path")
-      .datum(other)
+      .datum(lineB)
       .attr("fill", "none")
       .attr("stroke", "rgba(255,0,0,1)")
       .attr("stroke-linejoin", "round")
@@ -109,7 +109,7 @@ export class DualLineChart extends React.Component {
       .attr("d", dataLine)
 
     svg.selectAll(".dot")
-      .data(other)
+      .data(lineB)
       .enter()
       .append("circle")
         .attr("fill", "rgba(255,0,0,1)")
@@ -147,7 +147,7 @@ export class DualLineChart extends React.Component {
     const colors = d3.scaleOrdinal(["rgba(0,0,255,1)", "rgba(255,0,0,1)"])
 
     const legend = svg.selectAll(".legend")
-    .data(Object.keys(data))
+    .data(legendText)
     .enter().append("g")
       .attr("class", "legend")
       .attr("transform", (d, i) => "translate(30," + i * 19 + ")")
@@ -163,7 +163,7 @@ export class DualLineChart extends React.Component {
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "start")
-      .text((d, i) => Object.keys(data)[i])
+      .text((d, i) => legendText[i])
   }
 
   render() {
