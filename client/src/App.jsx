@@ -28,6 +28,7 @@ class EpicsMetrics extends React.Component {
           <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
+          <hr />
           Big Rocks vs. non-Big Rocks - To Do
           <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />

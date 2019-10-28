@@ -1,6 +1,9 @@
 module Api
     module V1
         class MetricsController < ActionController::API
+            @@baseUrl = ENV['JURL']
+            @@auth = ENV['JAUTH']
+
             def index
                 render json:Metrics::Sprint.order(:created_at).last(12).as_json, status: 200
             end
@@ -60,11 +63,39 @@ module Api
               # // }).then(data => {
               # //   console.log(data)
               # // })
+              report_period = Date.today.strftime("%B %-d, %Y")
+
+              p report_period
             end
 
             def self.metricsRetrieve
               self.teamMetricsRetrieve()
               self.epicMetricsRetrieve()
+            end
+
+            def self.t3
+              # Labels currently we care about:
+              #     Custom Dev
+              #     Quote
+              #     Split
+              #     Merge
+              #     Post Conversion
+              #     SRE
+              #     Datafix
+              #     CSL1
+              #     Documentation
+              #     CC Merge
+              #     Other 
+              # project = T3 AND resolved >= 2019-10-01 AND resolved <= 2019-10-16
+              # https://sparefoot.atlassian.net/rest/api/latest/search?startAt=65&fields=labels,issuetype&jql=project = T3 AND status in (resolved, closed, done) and resolved >= 2019-10-01 AND resolved <= 2019-10-16
+              qString = 'fields=labels,issuetype&jql=project=T3 AND type not in (epic) AND status in (resolved, closed, done) and resolved>=2019-10-01 AND resolved<=2019-10-16'
+              qurl = @@baseUrl + '/rest/api/latest/search?' + qString
+              response = HTTParty.get(qurl, {
+                headers: {"Authorization" => "Basic " + @@auth} 
+              })
+              data = JSON.parse(response.body).with_indifferent_access
+              # p data[:issues]
+              p data[:total]
             end
 
             def self.jira(team_selection)
@@ -88,9 +119,9 @@ module Api
               # 1. retrieve the last few closed sprints, ~6 or so
               ## need to move the auth token to env vars and update to send them via docker env. ($JIRA, $JIRAURL)
               # jira returns 50 at a time by default, you can set pagination size with maxResults, and will need to figure out paging using some startAt + maxResults looping logic
-              qurl = 'https://sparefoot.atlassian.net/rest/agile/latest/board/' + tjid  + '/sprint?state=closed'
+              qurl = @@baseUrl + '/rest/agile/latest/board/' + tjid  + '/sprint?state=closed'
               response = HTTParty.get(qurl, {
-                headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                headers: {"Authorization" => "Basic " + @@auth}
               })
               sprints = JSON.parse(response.body).with_indifferent_access[:values].last(6) # , response.code #, response.message, response.headers.inspect
               
@@ -133,16 +164,16 @@ module Api
                 sprint.team_id = team_id.to_i
 
                 # scope change %
-                qurl = 'https://sparefoot.atlassian.net/rest/greenhopper/1.0/gadgets/sprints/health?rapidViewId=' + tjid + '&sprintId=' + sid
+                qurl = @@baseUrl + '/rest/greenhopper/1.0/gadgets/sprints/health?rapidViewId=' + tjid + '&sprintId=' + sid
                 response = HTTParty.get(qurl, {
-                  headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                  headers: {"Authorization" => "Basic " + @@auth}
                 })
                 sprint.scope_change_pct = (JSON.parse(response.body).with_indifferent_access[:sprintMetrics].last()["value"].to_f - 100) / 100 # , response.code 
                 
                 # sprint metrics
-                qurl = 'https://sparefoot.atlassian.net/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=' + tjid + '&sprintId=' + sid
+                qurl = @@baseUrl + '/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=' + tjid + '&sprintId=' + sid
                 response = HTTParty.get(qurl, {
-                  headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                  headers: {"Authorization" => "Basic " + @@auth}
                 })
                 sprint_data = JSON.parse(response.body).with_indifferent_access
                 sprint_metrics = sprint_data[:contents]
@@ -157,9 +188,9 @@ module Api
 
                 # issue type counts, iterate over issueTypes to get counts
                 types.each do |t, v|
-                  qurl = 'https://sparefoot.atlassian.net/rest/agile/latest/board/' + tjid + '/sprint/' + sid + '/issue?fields=none&jql=issuetype="' + URI.escape(t) + '"'
+                  qurl = @@baseUrl + '/rest/agile/latest/board/' + tjid + '/sprint/' + sid + '/issue?fields=none&jql=issuetype="' + URI.escape(t) + '"'
                   response = HTTParty.get(qurl, {
-                    headers: {"Authorization" => "Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU="}
+                    headers: {"Authorization" => "Basic " + @@auth}
                   })
                   types[t] = JSON.parse(response.body).with_indifferent_access[:total].to_f 
                 end
