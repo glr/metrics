@@ -16,9 +16,12 @@ services:
       - ./middleware:/middleware
     ports:
       - "3000:3000"
-      - "1234:1234"
+      # - "1234:1234"
     depends_on:
       - db
+    environment:
+      - JURL
+      - JAUTH
 
   client:
     build: ./client
@@ -27,5 +30,5 @@ services:
       - ./client:/client
     ports:
       - "4000:4000"    
-    # depends_on:
-    #   - middleware
+    depends_on:
+      - middleware
