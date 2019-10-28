@@ -24,9 +24,13 @@ class EpicsMetrics extends React.Component {
       const epicCharts = (
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
+          <Component.StackedDualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
+          <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
           Big Rocks vs. non-Big Rocks - To Do
+          <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
+          <p />
           <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
         </div>
       )
@@ -145,12 +149,44 @@ class SLMetrics extends React.Component {
   }
 }
 
+class T3Metrics extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
+  componentDidMount() {
+    // const teams = fetch('http://localhost:3000/api/v1/teams')
+    // .then(results => {
+    //   return results.json()
+    // })
+    // .then(data => {
+    //   const teamMetrics = data.map((d, key) => {
+    //     return(
+    //       <div key={key}>
+    //         <TeamMetrics team={d.id} teamName={d.name} />
+    //       </div>
+    //     )
+    //   })
+    //   this.setState({teamMetrics: teamMetrics})
+    // })
+  }
+
+  render () {
+    return(<div>
+      {this.state.t3Metrics}
+    </div>)
+  }
+}
+
 function App() {
   return (
     <div className="App">
       <SLMetrics />
       <hr />
       <EpicsMetrics />
+      <hr />
+      <T3Metrics />
     </div>
   )  
 }
