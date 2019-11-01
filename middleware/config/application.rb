@@ -23,5 +23,7 @@ module Middleware
          resource '*', :headers => :any, :methods => [:get, :post, :put, :patch, :delete, :options, :head]
        end
     end
+
+    config.hosts << "middleware"
   end
 end
