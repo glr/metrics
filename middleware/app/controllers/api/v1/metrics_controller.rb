@@ -94,8 +94,11 @@ module Api
                 headers: {"Authorization" => "Basic " + @@auth} 
               })
               data = JSON.parse(response.body).with_indifferent_access
-              # p data[:issues]
-              p data[:total]
+              data[:issues].each { |i| 
+                p i[:fields][:labels]
+              }
+              # p data[:issues].first()
+              # p data[:total]
             end
 
             def self.jira(team_selection)
