@@ -38,7 +38,9 @@ module Api
                 todo: {
                   bigRocks:[],
                   other:[]},
-                dates: []
+                dates: [],
+                todoBars: [],
+                wipBars: []
               }
 
               obj.each { |d|
@@ -47,6 +49,16 @@ module Api
                 data[:wip][:other].push d.wip_other
                 data[:todo][:other].push d.todo_other
                 data[:dates].push d.report_period
+                wipTotal = d.wip_bigrocks + d.wip_other
+                todoTotal = d.todo_bigrocks + d.todo_other
+                data[:todoBars].push({
+                  "Big Rocks" => d.todo_bigrocks.to_f/todoTotal * 100,
+                  "Other" => d.todo_other.to_f/todoTotal * 100
+                })
+                data[:wipBars].push({
+                  "Big Rocks" => d.wip_bigrocks.to_f/wipTotal * 100,
+                  "Other" => d.wip_other.to_f/wipTotal * 100
+                })
               }
 
               render json:data, status:200

@@ -21,7 +21,8 @@ class EpicsMetrics extends React.Component {
       const todo = data.todo
       const dates = data.dates
       const legend = ["Big Rocks", "Other"]
-      console.log(data)
+      const wipBars = data.wipBars
+      const todoBars = data.todoBars
       const epicCharts = (
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
@@ -29,11 +30,14 @@ class EpicsMetrics extends React.Component {
           <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
+          <Component.StackedBarChart data={wipBars} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} />
           <hr />
           Big Rocks vs. non-Big Rocks - To Do
           <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />
           <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
+          <p />
+          <Component.StackedBarChart data={todoBars} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} />
         </div>
       )
       this.setState({
@@ -163,7 +167,6 @@ class T3Metrics extends React.Component {
       return results.json()
     })
     .then(data => {
-      console.log(data)
       // # Labels currently we care about:
       // const labels = [
       //   "Custom Dev",

@@ -13,6 +13,7 @@ export class StackedBarChart extends React.Component {
       const n = barData.length
       const xTicks = this.props.xTicks
       const xLabel = this.props.xLabel
+      const yLabel = this.props.yLabel
       const categories = Object.keys(first(barData))
       
       // Display Code
@@ -42,7 +43,7 @@ export class StackedBarChart extends React.Component {
     //   const colors = d3.scaleSequential(d3.interpolateRainbow)
       const colorRange = d3.scaleLinear()
         .domain([0, categories.length-1])
-        .range([0, 1])
+        .range([1, 0])
       const colors = d3.interpolateRdYlBu
     //   const colors = d3.scaleOrdinal(d3.schemeSet1)
       
@@ -63,7 +64,15 @@ export class StackedBarChart extends React.Component {
       svg.append("g")
         .attr("class", "y axis")
         .call(d3.axisLeft(yScale))
-  
+
+      svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text(yLabel)
+
       svg.append("text")
         .attr("transform",
           "translate(" + (width / 2) + " ," + (height + margin.bottom - 10) + ")")
