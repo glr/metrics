@@ -21,6 +21,7 @@ class EpicsMetrics extends React.Component {
       const todo = data.todo
       const dates = data.dates
       const legend = ["Big Rocks", "Other"]
+      console.log(data)
       const epicCharts = (
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
@@ -75,13 +76,13 @@ class TeamMetrics extends React.Component {
         metricData.scopeChange.push(d.scope_change_pct * 100)
         metricData.forecastError.push(d.forecast_error_pct * 100)
         metricData.typeCounts.push({
-          story: d.story_pct * 100,
-          bug: d.bug_pct * 100,
-          spike: d.spike_pct * 100,
-          techDebt: d.technical_debt_pct * 100,
-          incident: d.incident_pct * 100,
-          opWork: d.operational_work_pct * 100,
-          dataFix: d.data_fix_pct * 100,
+          "Story": d.story_pct * 100,
+          "Bug": d.bug_pct * 100,
+          "Spike": d.spike_pct * 100,
+          "Tech Debt": d.technical_debt_pct * 100,
+          "Incident": d.incident_pct * 100,
+          "Operational Work": d.operational_work_pct * 100,
+          "Data Fix": d.data_fix_pct * 100,
         })
       })
       const headerMetrics = {
@@ -157,20 +158,66 @@ class T3Metrics extends React.Component {
   }
 
   componentDidMount() {
-    // const teams = fetch('http://localhost:3000/api/v1/teams')
-    // .then(results => {
-    //   return results.json()
-    // })
-    // .then(data => {
-    //   const teamMetrics = data.map((d, key) => {
-    //     return(
-    //       <div key={key}>
-    //         <TeamMetrics team={d.id} teamName={d.name} />
-    //       </div>
-    //     )
-    //   })
-    //   this.setState({teamMetrics: teamMetrics})
-    // })
+    const t3metrics = fetch('http://localhost:3000/api/v1/metrics/t3')
+    .then(results => {
+      return results.json()
+    })
+    .then(data => {
+      console.log(data)
+      // # Labels currently we care about:
+      // const labels = [
+      //   "Custom Dev",
+      //   "Quote",
+      //   "Split",
+      //   "Merge",
+      //   "Post Conversion",
+      //   "SRE",
+      //   "Data Fix",
+      //   "CSL-1",
+      //   "Documentation",
+      //   "CC Merge",
+      //   "Other"
+      // ]
+
+      const metricData = {
+        dates: [],
+        typeCounts: []
+      }
+      const t3 = data.map((d, key) => {
+        const total = 
+          d.customDev +
+          d.quote +
+          d.split +
+          d.merge +
+          d.postConversion +
+          d.sre +
+          d.datafix +
+          d.csl1 +
+          d.documentation +
+          d.ccMerge +
+          d.other
+        metricData.typeCounts.push({
+          "Custom Dev": d.customDev/total * 100,
+          "Quote": d.quote/total * 100,
+          "Split": d.split/total * 100,
+          "Merge": d.merge/total * 100,
+          "Post Conversion": d.postConversion/total * 100,
+          "SRE": d.sre/total * 100,
+          "Data Fix": d.datafix/total * 100,
+          "CSL-1": d.csl1/total * 100,
+          "Documentation": d.documentation/total * 100,
+          "CC Merge": d.ccMerge/total * 100,
+          "Other": d.other/total * 100
+        })
+        metricData.dates.push(d.endDate)
+      })
+      this.setState({t3Metrics: 
+        <div>
+          Tier 3 - Work Distribution
+          <Component.StackedBarChart data={metricData.typeCounts} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" />
+        </div>
+      })
+    })
   }
 
   render () {
@@ -185,9 +232,9 @@ function App() {
     <div className="App">
       <SLMetrics />
       <hr />
-      <EpicsMetrics />
-      <hr />
       <T3Metrics />
+      <hr />
+      <EpicsMetrics />
     </div>
   )  
 }

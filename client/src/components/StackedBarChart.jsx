@@ -13,6 +13,7 @@ export class StackedBarChart extends React.Component {
       const n = barData.length
       const xTicks = this.props.xTicks
       const xLabel = this.props.xLabel
+      const categories = Object.keys(first(barData))
       
       // Display Code
       const selector = "." + this.props.chart
@@ -38,7 +39,12 @@ export class StackedBarChart extends React.Component {
         .range([height, 0])
   
       // const colors = d3.scaleOrdinal().domain(last(barData)).range(d3.interpolatePlasma)
-      const colors = d3.scaleOrdinal(d3.schemeSet1)
+    //   const colors = d3.scaleSequential(d3.interpolateRainbow)
+      const colorRange = d3.scaleLinear()
+        .domain([0, categories.length-1])
+        .range([0, 1])
+      const colors = d3.interpolateRdYlBu
+    //   const colors = d3.scaleOrdinal(d3.schemeSet1)
       
       const stack = d3.stack()
         .keys(Object.keys(last(barData)))
@@ -53,6 +59,10 @@ export class StackedBarChart extends React.Component {
         .call(d3.axisBottom(xScale)
           .ticks(n)
           .tickFormat((d, i) => xTicks[i]))
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(yScale))
   
       svg.append("text")
         .attr("transform",
@@ -65,7 +75,7 @@ export class StackedBarChart extends React.Component {
         .enter()
         .append("g")
           .attr("class", "percent")
-          .style("fill", (d, i) => colors(i))
+          .style("fill", (d, i) => colors(colorRange(i)))
   
       const rect = groups.selectAll("rect")
         .data(d => d)
@@ -86,7 +96,7 @@ export class StackedBarChart extends React.Component {
   
       // Draw legend
       const legend = svg.selectAll(".legend")
-        .data(colors)
+        .data(categories)
         .enter()
         .append("g")
           .attr("class", "legend")
@@ -96,7 +106,7 @@ export class StackedBarChart extends React.Component {
         .attr("x", width - 18)
         .attr("width", 18)
         .attr("height", 18)
-        .style("fill", (d, i) => colors(i))
+        .style("fill", (d, i) => colors(colorRange(i)))
   
       legend.append("text") 
         .attr("x", width + 5)

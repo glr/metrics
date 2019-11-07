@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'metrics', to: 'metrics#index'
       get 'metrics/epics', to: 'metrics#epics'
+      get 'metrics/t3', to: 'metrics#t3'
       get 'metrics/:id', to: 'metrics#show'
       get 'teams', to: 'teams#index'
     end

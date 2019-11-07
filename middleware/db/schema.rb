@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_17_200224) do
+ActiveRecord::Schema.define(version: 2019_11_01_182725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,24 @@ ActiveRecord::Schema.define(version: 2019_10_17_200224) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "jid"
     t.index ["team_id"], name: "index_metrics_sprints_on_team_id"
+  end
+
+  create_table "metrics_t3s", force: :cascade do |t|
+    t.date "startDate"
+    t.date "endDate"
+    t.integer "customDev"
+    t.integer "quote"
+    t.integer "split"
+    t.integer "merge"
+    t.integer "postConversion"
+    t.integer "sre"
+    t.integer "datafix"
+    t.integer "csl1"
+    t.integer "documentation"
+    t.integer "ccMerge"
+    t.integer "other"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "teams", force: :cascade do |t|
