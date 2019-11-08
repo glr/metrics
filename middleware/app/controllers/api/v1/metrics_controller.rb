@@ -21,7 +21,8 @@ module Api
             other:[]},
           dates: [],
           todoBars: [],
-          wipBars: []
+          wipBars: [],
+          wipCountBars:[]
         }
 
         Metrics::Epic.last(6).each { |d|
@@ -39,6 +40,10 @@ module Api
           data[:wipBars].push({
             "Big Rocks" => d.wip_bigrocks.to_f/wipTotal * 100,
             "Other" => d.wip_other.to_f/wipTotal * 100
+          })
+          data[:wipCountBars].push({
+            "Big Rocks" => d.wip_bigrocks,
+            "Other" => d.wip_other
           })
         }
 

@@ -14,6 +14,8 @@ export class StackedBarChart extends React.Component {
       const xTicks = this.props.xTicks
       const xLabel = this.props.xLabel
       const yLabel = this.props.yLabel
+      const additionalHoverText = this.props.additionalHoverText || ""
+      const hoverPrec = this.props.hoverPrec || 0
       const categories = Object.keys(first(barData))
       
       // Display Code
@@ -35,8 +37,13 @@ export class StackedBarChart extends React.Component {
         .paddingOuter(0.1)
         .paddingInner(0.15)
   
+
+      const yMax = d3.max(barData.map((d, i) => {
+        return d3.sum(Object.values(d))
+      }))
+      
       const yScale = d3.scaleLinear()
-        .domain([0, 100])
+        .domain([0, yMax])
         .range([height, 0])
   
       // const colors = d3.scaleOrdinal().domain(last(barData)).range(d3.interpolatePlasma)
@@ -100,7 +107,7 @@ export class StackedBarChart extends React.Component {
             let xPosition = d3.mouse(this)[0] - 15
             let yPosition = d3.mouse(this)[1] - 25
             tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
-            tooltip.select("text").text((d[1]-d[0]).toFixed(2) + "%")
+            tooltip.select("text").text((d[1]-d[0]).toFixed(hoverPrec) + additionalHoverText)
           })
   
       // Draw legend

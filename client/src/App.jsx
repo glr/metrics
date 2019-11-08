@@ -23,21 +23,24 @@ class EpicsMetrics extends React.Component {
       const legend = ["Big Rocks", "Other"]
       const wipBars = data.wipBars
       const todoBars = data.todoBars
+      const wipCountBars = data.wipCountBars
       const epicCharts = (
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
-          <Component.StackedDualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
+          {/* <Component.StackedDualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
+          <p /> */}
+          <Component.StackedBarChart data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
           <p />
-          <Component.StackedBarChart data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} />
-          <hr />
+          <Component.StackedBarChart data={wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={dates} chart={"EpicWIPCountBars"} />
+          {/* <hr />
           Big Rocks vs. non-Big Rocks - To Do
           <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />
           <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />
-          <Component.StackedBarChart data={todoBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} />
+          <Component.StackedBarChart data={todoBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} /> */}
         </div>
       )
       this.setState({
@@ -108,7 +111,7 @@ class TeamMetrics extends React.Component {
             <p />
             <Component.TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
             <p />
-            <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} />
+            <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
             <hr />
           </div>
         )
@@ -217,7 +220,7 @@ class T3Metrics extends React.Component {
       this.setState({t3Metrics: 
         <div>
           Tier 3 - Work Distribution
-          <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" />
+          <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
         </div>
       })
     })
