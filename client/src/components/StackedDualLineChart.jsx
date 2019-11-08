@@ -54,17 +54,18 @@ export class StackedDualLineChart extends React.Component {
       .text(xLabel)
 
     const tks = last(yScale.domain())
-    
+    const tksThreshold = 15
+
     svg.append("g")
       .attr("class", "y axis")
       .call(d3.axisLeft(yScale)
-        .ticks(tks<10?tks:tks/5))
+        .ticks(tks<tksThreshold?tks:tks/5))
     
     svg.append("g")
       .attr("class", "y axis right")
       .attr("transform", "translate(" + (width) + ", 0)")
       .call(d3.axisRight(yScale)
-        .ticks(tks<10?tks:tks/5))
+        .ticks(tks<tksThreshold?tks:tks/5))
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
