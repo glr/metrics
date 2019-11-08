@@ -75,27 +75,39 @@ module Api
             end
 
             def self.epicMetricsRetrieve
-              #todo:
-              # // const baseUrl = 'https://sparefoot.atlassian.net/rest/api/latest/search?jql=project = SL and type = epic and status='
-              # // const lrInProgressUrl = baseUrl + '"In Progress" and (labels not in (st_big_rock) or labels is empty)'
-              # // const brInProgressUrl = baseUrl + '"In Progress" and (labels in (st_big_rock))'
-              # // const lrToDoURL = baseUrl + '"To Do" and (labels not in (st_big_rock) or labels is empty)'
-              # // const brToDoUrl = baseUrl + '"To Do" and (labels in (st_big_rock))'
-              # // const tok = 'Basic Z2FicmllbC5yYWVsQHN0b3JhYmxlLmNvbTplSm9NZ2dHU2QzU3kzR2U2cmRTZDhEMjU='
-              
-              # // const lrInProgress = fetch(lrInProgressUrl, {
-              # //   mode: 'no-cors',
-              # //   headers: {
-              # //     'Authorization': tok
-              # //   }
-              # // }).then(results => {
-              # //   return results.json()
-              # // }).then(data => {
-              # //   console.log(data)
-              # // })
-              report_period = Date.today.strftime("%B %-d, %Y")
+              baseString = @@baseUrl + '/rest/api/latest/search?jql=project=SL and type=epic and status='
 
-              p report_period
+              otherInProgressUrl = baseString + '"In Progress" and (labels not in (st_big_rock) or labels is empty)'
+              bigrockInProgressUrl = baseString + '"In Progress" and (labels in (st_big_rock))'
+              otherToDoURL = baseString + '"To Do" and (labels not in (st_big_rock) or labels is empty)'
+              bigrockToDoUrl = baseString + '"To Do" and (labels in (st_big_rock))'
+              
+
+
+              retrieveData = lambda { |qUrl| 
+                response = HTTParty.get(qUrl, {
+                  headers: {"Authorization" => "Basic " + @@auth} 
+                }) 
+                return (JSON.parse(response.body).with_indifferent_access)[:total]
+              }
+              
+              lastDate = Metrics::Epic.last()[:report_period]
+              if Date.today() > Date.parse(lastDate)
+                bigRockWIP = retrieveData.call(bigrockInProgressUrl)
+                otherWIP = retrieveData.call(otherInProgressUrl)
+                bigrockToDo = retrieveData.call(bigrockToDoUrl)
+                otherToDo = retrieveData.call(otherToDoURL)
+                report_period = Date.today.strftime("%B %-d, %Y")
+                p Metrics::Epic.create(
+                  wip_bigrocks: bigRockWIP, 
+                  wip_other: otherWIP, 
+                  todo_bigrocks: bigrockToDo, 
+                  todo_other: otherToDo,
+                  report_period: report_period
+                )
+              else
+                puts "Report for " + Date.today().strftime("%B %-d, %Y") + " already saved."
+              end
             end
 
             def self.metricsRetrieve

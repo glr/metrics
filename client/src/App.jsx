@@ -30,14 +30,14 @@ class EpicsMetrics extends React.Component {
           <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p />
-          <Component.StackedBarChart data={wipBars} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} />
+          <Component.StackedBarChart data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} />
           <hr />
           Big Rocks vs. non-Big Rocks - To Do
           <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />
           <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
           <p />
-          <Component.StackedBarChart data={todoBars} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} />
+          <Component.StackedBarChart data={todoBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} />
         </div>
       )
       this.setState({
@@ -108,7 +108,7 @@ class TeamMetrics extends React.Component {
             <p />
             <Component.TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
             <p />
-            <Component.StackedBarChart data={metricData.typeCounts} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} />
+            <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} />
             <hr />
           </div>
         )
@@ -217,7 +217,7 @@ class T3Metrics extends React.Component {
       this.setState({t3Metrics: 
         <div>
           Tier 3 - Work Distribution
-          <Component.StackedBarChart data={metricData.typeCounts} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" />
+          <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" />
         </div>
       })
     })

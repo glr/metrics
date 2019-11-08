@@ -37,10 +37,6 @@ export class DualLineChart extends React.Component {
       .domain([0, Math.max(d3.max(lineA),d3.max(lineB))]).nice()
       .range([height, 0])
 
-    const aScale = d3.scaleLinear()
-      .domain(xTicks)
-      .range([0, width])
-
     svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
