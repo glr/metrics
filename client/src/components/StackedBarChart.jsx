@@ -47,13 +47,10 @@ export class StackedBarChart extends React.Component {
         .domain([0, yMax])
         .range([height, 0])
   
-      // const colors = d3.scaleOrdinal().domain(last(barData)).range(d3.interpolatePlasma)
-    //   const colors = d3.scaleSequential(d3.interpolateRainbow)
       const colorRange = d3.scaleLinear()
         .domain([0, categories.length-1])
         .range([1, 0])
       const colors = d3.interpolateRdYlBu
-    //   const colors = d3.scaleOrdinal(d3.schemeSet1)
       
       const stack = d3.stack()
         .keys(Object.keys(last(barData)))
@@ -94,6 +91,11 @@ export class StackedBarChart extends React.Component {
           .attr("class", "percent")
           .style("fill", (d, i) => colors(colorRange(i)))
   
+
+      const calcHeight = a => {
+        return yScale(a[0]) - yScale(a[1])
+      }
+
       const rect = groups.selectAll("rect")
         .data(d => d)
         .enter()
@@ -101,7 +103,7 @@ export class StackedBarChart extends React.Component {
         .attr("class", "databar")
         .attr("x", (d, i) => xScale(xTicks[i]))
         .attr("y", d => yScale(d[1]))
-          .attr("height", d => yScale(d[0]) - yScale(d[1]))
+          .attr("height", d => calcHeight(d))
           .attr("width", xScale.bandwidth())
           .on("mouseover", () => tooltip.style("display", null))
           .on("mouseout", () => tooltip.style("display", "none"))
@@ -119,23 +121,23 @@ export class StackedBarChart extends React.Component {
           .attr("class", "valtext")
         valtext.append("rect")
           .attr("x", (d, i) => xScale(xTicks[i])+(xScale.bandwidth()/2)-25)
-          .attr("y", d => yScale(d[1]) + ((yScale(d[0]) - yScale(d[1]))/2)-10)
+          .attr("y", d => yScale(d[1]) + (calcHeight(d)/2)-10)
           .attr("width", 50)
           .attr("height", 20)
           .attr("fill", "white")
           .style("opacity", 0.5)
-          .filter((d, i) => { return (yScale(d[0]) - yScale(d[1])) <= 15 })
+          .filter((d, i) => { return calcHeight(d) <= 15 })
           .style("display", "none")
         valtext.append("text")
           .attr("x", (d, i) => xScale(xTicks[i])+(xScale.bandwidth()/2))
-          .attr("y", d => yScale(d[1]) + ((yScale(d[0]) - yScale(d[1]))/2)-10)
+          .attr("y", d => yScale(d[1]) + (calcHeight(d)/2)-10)
           .attr("dy", "1.2em")
           .style("text-anchor", "middle")
           .attr("font-size", "12px")
           .attr("font-weight", "bold")
           .attr("fill", "black")
           .text(d => (d[1]-d[0]).toFixed(hoverPrec) + additionalHoverText)
-          .filter((d, i) => { return (yScale(d[0]) - yScale(d[1])) <= 10 })
+          .filter((d, i) => { return calcHeight(d) <= 10 })
           .style("display", "none")
       }
       
@@ -178,7 +180,7 @@ export class StackedBarChart extends React.Component {
         .attr("font-size", "12px")
         .attr("font-weight", "bold")
     }
-  
+
     render() {
       return (
         <div className={this.props.chart}></div>
