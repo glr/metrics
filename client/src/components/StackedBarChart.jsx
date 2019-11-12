@@ -17,6 +17,7 @@ export class StackedBarChart extends React.Component {
       const additionalHoverText = this.props.additionalHoverText || ""
       const hoverPrec = this.props.hoverPrec || 0
       const categories = Object.keys(first(barData))
+      const showBarValues = this.props.showBarValues || false
       
       // Display Code
       const selector = "." + this.props.chart
@@ -97,8 +98,9 @@ export class StackedBarChart extends React.Component {
         .data(d => d)
         .enter()
         .append("rect")
-          .attr("x", (d, i) => xScale(xTicks[i]))
-          .attr("y", d => yScale(d[1]))
+        .attr("class", "databar")
+        .attr("x", (d, i) => xScale(xTicks[i]))
+        .attr("y", d => yScale(d[1]))
           .attr("height", d => yScale(d[0]) - yScale(d[1]))
           .attr("width", xScale.bandwidth())
           .on("mouseover", () => tooltip.style("display", null))
@@ -109,7 +111,34 @@ export class StackedBarChart extends React.Component {
             tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
             tooltip.select("text").text((d[1]-d[0]).toFixed(hoverPrec) + additionalHoverText)
           })
-  
+      if (showBarValues) {
+        const valtext = groups.selectAll("g")
+          .data(d => d)
+          .enter()
+          .append("g")
+          .attr("class", "valtext")
+        valtext.append("rect")
+          .attr("x", (d, i) => xScale(xTicks[i])+(xScale.bandwidth()/2)-25)
+          .attr("y", d => yScale(d[1]) + ((yScale(d[0]) - yScale(d[1]))/2)-10)
+          .attr("width", 50)
+          .attr("height", 20)
+          .attr("fill", "white")
+          .style("opacity", 0.5)
+          .filter((d, i) => { return (yScale(d[0]) - yScale(d[1])) <= 15 })
+          .style("display", "none")
+        valtext.append("text")
+          .attr("x", (d, i) => xScale(xTicks[i])+(xScale.bandwidth()/2))
+          .attr("y", d => yScale(d[1]) + ((yScale(d[0]) - yScale(d[1]))/2)-10)
+          .attr("dy", "1.2em")
+          .style("text-anchor", "middle")
+          .attr("font-size", "12px")
+          .attr("font-weight", "bold")
+          .attr("fill", "black")
+          .text(d => (d[1]-d[0]).toFixed(hoverPrec) + additionalHoverText)
+          .filter((d, i) => { return (yScale(d[0]) - yScale(d[1])) <= 10 })
+          .style("display", "none")
+      }
+      
       // Draw legend
       const legend = svg.selectAll(".legend")
         .data(categories)

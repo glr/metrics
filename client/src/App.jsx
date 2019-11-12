@@ -31,9 +31,9 @@ class EpicsMetrics extends React.Component {
           <p />
           <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
           <p /> */}
-          <Component.StackedBarChart data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
+          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
           <p />
-          <Component.StackedBarChart data={wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={dates} chart={"EpicWIPCountBars"} />
+          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={dates} chart={"EpicWIPCountBars"} />
           {/* <hr />
           Big Rocks vs. non-Big Rocks - To Do
           <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
@@ -111,7 +111,7 @@ class TeamMetrics extends React.Component {
             <p />
             <Component.TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
             <p />
-            <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
+            <Component.StackedBarChart showBarValues={this.props.showBarValues} data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
             <hr />
           </div>
         )
@@ -143,7 +143,7 @@ class SLMetrics extends React.Component {
       const teamMetrics = data.map((d, key) => {
         return(
           <div key={key}>
-            <TeamMetrics team={d.id} teamName={d.name} />
+            <TeamMetrics showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} />
           </div>
         )
       })
@@ -220,7 +220,7 @@ class T3Metrics extends React.Component {
       this.setState({t3Metrics: 
         <div>
           Tier 3 - Work Distribution
-          <Component.StackedBarChart data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
+          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
         </div>
       })
     })
@@ -233,14 +233,40 @@ class T3Metrics extends React.Component {
   }
 }
 
+class Metrics extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showBarValues: false
+    }
+    this.showHideBarValues = this.showHideBarValues.bind(this)
+  }
+
+  showHideBarValues() {
+    let oldState = this.state.showBarValues
+    this.setState({
+      showBarValues:!oldState
+    })
+  }
+
+  render() {
+    return (
+      <div className="Metrics">
+        <a href="#" onClick={this.showHideBarValues}>Show/Hide Bar Values</a>
+        <SLMetrics showBarValues={this.state.showBarValues}/>
+        <hr />
+        <T3Metrics showBarValues={this.state.showBarValues}/>
+        <hr />
+        <EpicsMetrics showBarValues={this.state.showBarValues}/>
+      </div>
+    )
+  }
+}
+
 function App() {
   return (
     <div className="App">
-      <SLMetrics />
-      <hr />
-      <T3Metrics />
-      <hr />
-      <EpicsMetrics />
+      <Metrics />
     </div>
   )  
 }
