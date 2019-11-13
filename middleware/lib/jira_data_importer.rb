@@ -50,7 +50,7 @@ class JiraDataImporter
     end
 
     def self.metricsRetrieve
-        # self.teamMetricsRetrieve()
+        self.teamMetricsRetrieve()
         self.epicMetricsRetrieve()
     end
 
