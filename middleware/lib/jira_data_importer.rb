@@ -37,7 +37,7 @@ class JiraDataImporter
             bigrockToDo = jiraQuery(bigrockToDoUrl)[:total]
             otherToDo = jiraQuery(otherToDoURL)[:total]
             report_period = Date.today.strftime("%B %-d, %Y")
-            p Metrics::Epic.new(
+            Metrics::Epic.create(
             wip_bigrocks: bigRockWIP, 
             wip_other: otherWIP, 
             todo_bigrocks: bigrockToDo, 
