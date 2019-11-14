@@ -12,39 +12,15 @@ class EpicsMetrics extends React.Component {
   }
 
   componentDidMount() {
-    const epicData = fetch('http://localhost:3000/api/v1/metrics/epics')
+    fetch('http://localhost:3000/api/v1/metrics/epics')
     .then(results => {
       return results.json()
     })
     .then(data => {
-      const wip = data.wip
-      const todo = data.todo
-      const dates = data.dates
-      const legend = ["Big Rocks", "Other"]
-      const wipBars = data.wipBars
-      const todoBars = data.todoBars
-      const wipCountBars = data.wipCountBars
-      const epicCharts = (
-        <div>
-          Big Rocks vs. non-Big Rocks - In Progress
-          {/* <Component.StackedDualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
-          <p />
-          <Component.DualLineChart lineA={wip.bigRocks} lineB={wip.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - In Progress" chart="epicWIP" />
-          <p /> */}
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={wipBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
-          <p />
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={dates} chart={"EpicWIPCountBars"} />
-          {/* <hr />
-          Big Rocks vs. non-Big Rocks - To Do
-          <Component.StackedDualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
-          <p />
-          <Component.DualLineChart lineA={todo.bigRocks} lineB={todo.other} legend={legend} xTicks={dates} xLabel="Date" yLabel="Number of Epics" title="Big Rocks vs. non-Big Rocks - To Do" chart="epicTodo" />
-          <p />
-          <Component.StackedBarChart data={todoBars} yLabel={"Percent"} xLabel="Date" xTicks={dates} chart={"EpicTodoBars"} /> */}
-        </div>
-      )
       this.setState({
-        epicCharts: epicCharts
+        dates: data.dates,
+        wipBars: data.wipBars,
+        wipCountBars: data.wipCountBars
       })
     })
   }
@@ -52,7 +28,10 @@ class EpicsMetrics extends React.Component {
   render() {
     return(
       <div>
-        {this.state.epicCharts}
+        Big Rocks vs. non-Big Rocks - In Progress
+        <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipBars} yLabel={"Percent"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
+        <p />
+        <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPCountBars"} />
       </div>
     )
   }
@@ -61,12 +40,21 @@ class EpicsMetrics extends React.Component {
 class TeamMetrics extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      headerMetrics: {
+        teamName: this.props.teamName,
+        lastSprintName:"",
+        lastSprintGoal: "",
+        avgForecastError: 0,
+        forecastStdDev: 0,
+        avgScopeChange: 0,
+        scopeChangeStdDev: 0,
+      }
+    }
   }
 
   componentDidMount() {
-    const team = this.props.team
-    const teamMetrics = fetch('http://localhost:3000/api/v1/metrics/' + team)
+    fetch('http://localhost:3000/api/v1/metrics/' + this.props.team)
     .then(results => {
       return results.json()
     })
@@ -91,6 +79,7 @@ class TeamMetrics extends React.Component {
           "Operational Work": d.operational_work_pct * 100,
           "Data Fix": d.data_fix_pct * 100,
         })
+        return true
       })
       const headerMetrics = {
         teamName: this.props.teamName,
@@ -102,19 +91,11 @@ class TeamMetrics extends React.Component {
         scopeChangeStdDev: d3.deviation(metricData.scopeChange),
       }
       this.setState({
-        teamMetrics:(
-          <div>
-            <hr />
-            <Component.TeamHeader data={headerMetrics} />
-            <p />
-            <Component.TrendLineChart data={metricData.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
-            <p />
-            <Component.TrendLineChart data={metricData.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
-            <p />
-            <Component.StackedBarChart showBarValues={this.props.showBarValues} data={metricData.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={metricData.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
-            <hr />
-          </div>
-        )
+        forecastError: metricData.forecastError,
+        sprints: metricData.sprints,
+        scopeChange: metricData.scopeChange,
+        typeCounts: metricData.typeCounts,
+        headerMetrics: headerMetrics
       })
     })
   }
@@ -122,7 +103,15 @@ class TeamMetrics extends React.Component {
   render() {
     return (
       <div>
-        {this.state.teamMetrics}
+        <hr />
+        <Component.TeamHeader data={this.state.headerMetrics} />
+        <p />
+        <Component.TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
+        <p />
+        <Component.TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+        <p />
+        <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
+        <hr />
       </div>
     )
   }
@@ -131,30 +120,25 @@ class TeamMetrics extends React.Component {
 class SLMetrics extends React.Component {
   constructor(props) {
     super(props)
-    this.state={}
+    this.state={teamMetrics:[]}
   }
 
   componentDidMount() {
-    const teams = fetch('http://localhost:3000/api/v1/teams')
+    fetch('http://localhost:3000/api/v1/teams')
     .then(results => {
       return results.json()
     })
     .then(data => {
-      const teamMetrics = data.map((d, key) => {
-        return(
-          <div key={key}>
-            <TeamMetrics showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} />
-          </div>
-        )
-      })
-      this.setState({teamMetrics: teamMetrics})
+      this.setState({teamMetrics: data})
     })
   }
 
   render () {
-    return(<div>
-      {this.state.teamMetrics}
-    </div>)
+    return(this.state.teamMetrics.map((d, key) => {
+        return (<div key={key}>
+          <TeamMetrics showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} />
+        </div>)
+    }))
   }
 }
 
@@ -165,7 +149,7 @@ class T3Metrics extends React.Component {
   }
 
   componentDidMount() {
-    const t3metrics = fetch('http://localhost:3000/api/v1/metrics/t3')
+    fetch('http://localhost:3000/api/v1/metrics/t3')
     .then(results => {
       return results.json()
     })
@@ -189,7 +173,7 @@ class T3Metrics extends React.Component {
         dates: [],
         typeCounts: []
       }
-      const t3 = data.map((d, key) => {
+      data.map((d, key) => {
         const total = 
           d.customDev +
           d.quote +
@@ -216,20 +200,22 @@ class T3Metrics extends React.Component {
           "Other": d.other/total * 100
         })
         metricData.dates.push(d.endDate)
+        return true
       })
-      this.setState({t3Metrics: 
-        <div>
-          Tier 3 - Work Distribution
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={metricData.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={metricData.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
-        </div>
+      this.setState({
+        typeCounts: metricData.typeCounts,
+        dates: metricData.dates
       })
     })
   }
-
+  
   render () {
-    return(<div>
-      {this.state.t3Metrics}
-    </div>)
+    return(
+      <div>
+        Tier 3 - Work Distribution
+        <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={this.state.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
+      </div>
+    )
   }
 }
 
@@ -250,9 +236,10 @@ class Metrics extends React.Component {
   }
 
   render() {
+    let text = this.state.showBarValues? "Hide" : "Show"
     return (
       <div className="Metrics">
-        <a href="#" onClick={this.showHideBarValues}>Show/Hide Bar Values</a>
+        <button onClick={this.showHideBarValues}>{text} Bar Values</button>
         <SLMetrics showBarValues={this.state.showBarValues}/>
         <hr />
         <T3Metrics showBarValues={this.state.showBarValues}/>

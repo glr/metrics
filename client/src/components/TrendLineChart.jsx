@@ -6,12 +6,19 @@ export class TrendLineChart extends React.Component {
       this.drawChart()
     }
   
+    componentDidUpdate() {
+      // todo: there has to be a better way to update the chart rendering when things change... 
+      const selector = "." + this.props.chart
+      d3.select(selector + '> svg').remove()
+      this.drawChart()
+    }
+    
     drawChart() {
-      const data = this.props.data
-      const xTicks = this.props.xTicks
-      const xLabel = this.props.xLabel
-      const yLabel = this.props.yLabel
-      const n = data.length
+      const data = this.props.data || []
+      const xTicks = this.props.xTicks || []
+      const xLabel = this.props.xLabel || ""
+      const yLabel = this.props.yLabel || ""
+      const n = data.length || 0
   
       // Linear Regression using Least Squares for trend line
       const xBar = (n - 1) / 2

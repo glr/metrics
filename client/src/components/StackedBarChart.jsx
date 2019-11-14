@@ -7,17 +7,31 @@ export class StackedBarChart extends React.Component {
     componentDidMount() {
       this.drawChart()
     }
+
+    componentDidUpdate() {
+      // todo: there has to be a better way to update the chart rendering when things change... 
+      const selector = "." + this.props.chart
+      d3.select(selector + '> svg').remove()
+      this.drawChart()
+    }
+
+    // todo: is this going to be necessary?
+    // componentWillUnmount() {
+    //   const selector = "." + this.props.chart
+    //   d3.select(selector + '> svg').remove()
+    // }
   
     drawChart() {
-      const barData = this.props.data
+      const barData = this.props.data || []
       const n = barData.length
-      const xTicks = this.props.xTicks
-      const xLabel = this.props.xLabel
-      const yLabel = this.props.yLabel
+      const xTicks = this.props.xTicks || []
+      const xLabel = this.props.xLabel || ""
+      const yLabel = this.props.yLabel || ""
       const additionalHoverText = this.props.additionalHoverText || ""
       const hoverPrec = this.props.hoverPrec || 0
-      const categories = Object.keys(first(barData))
+      const categories = Object.keys(first(barData) || {})
       const showBarValues = this.props.showBarValues || false
+      const showTooltipOnHover = this.props.showTooltipOnHover || true
       
       // Display Code
       const selector = "." + this.props.chart
@@ -53,7 +67,7 @@ export class StackedBarChart extends React.Component {
       const colors = d3.interpolateRdYlBu
       
       const stack = d3.stack()
-        .keys(Object.keys(last(barData)))
+        .keys(Object.keys(last(barData) || {}))
         .order(d3.stackOrderNone)
         .offset(d3.stackOffsetNone)
   
@@ -105,7 +119,8 @@ export class StackedBarChart extends React.Component {
         .attr("y", d => yScale(d[1]))
           .attr("height", d => calcHeight(d))
           .attr("width", xScale.bandwidth())
-          .on("mouseover", () => tooltip.style("display", null))
+      if (showTooltipOnHover) {    
+        rect.on("mouseover", () => tooltip.style("display", null))
           .on("mouseout", () => tooltip.style("display", "none"))
           .on("mousemove", function (d) {
             let xPosition = d3.mouse(this)[0] - 15
@@ -113,6 +128,7 @@ export class StackedBarChart extends React.Component {
             tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
             tooltip.select("text").text((d[1]-d[0]).toFixed(hoverPrec) + additionalHoverText)
           })
+      }
       if (showBarValues) {
         const valtext = groups.selectAll("g")
           .data(d => d)
