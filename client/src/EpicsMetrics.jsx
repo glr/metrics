@@ -1,5 +1,5 @@
 import React from 'react'
-import * as Component from './components/components.jsx'
+import {StackedBarChart} from './components/components.jsx'
 
 class EpicsMetrics extends React.Component {
     constructor(props) {
@@ -25,9 +25,9 @@ class EpicsMetrics extends React.Component {
       return(
         <div>
           Big Rocks vs. non-Big Rocks - In Progress
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipBars} yLabel={"Percent"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipBars} yLabel={"Percent"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
           <p />
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPCountBars"} />
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPCountBars"} />
         </div>
       )
     }

@@ -1,5 +1,5 @@
 import React from 'react'
-import * as Component from './components/components.jsx'
+import {StackedBarChart} from './components/components.jsx'
 
 class T3Metrics extends React.Component {
     constructor(props) {
@@ -72,7 +72,7 @@ class T3Metrics extends React.Component {
       return(
         <div>
           Tier 3 - Work Distribution
-          <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={this.state.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={this.state.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
         </div>
       )
     }

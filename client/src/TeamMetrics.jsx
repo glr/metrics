@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import last from "lodash/last"
 import React from 'react'
-import * as Component from './components/components.jsx'
+import {TeamHeader, TrendLineChart, StackedBarChart} from './components/components.jsx'
 
 class TeamMetrics extends React.Component {
   constructor(props) {
@@ -70,13 +70,13 @@ class TeamMetrics extends React.Component {
     return (
       <div>
         <hr />
-        <Component.TeamHeader data={this.state.headerMetrics} />
+        <TeamHeader data={this.state.headerMetrics} />
         <p />
-        <Component.TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
+        <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
         <p />
-        <Component.TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+        <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
         <p />
-        <Component.StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
+        <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
         <hr />
       </div>
     )
