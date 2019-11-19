@@ -10,10 +10,10 @@ class Metrics extends React.Component {
     this.state = {
       showBarValues: false
     }
-    this.showHideBarValues = this.showHideBarValues.bind(this)
+    this.toggleShowBarValues = this.toggleShowBarValues.bind(this)
   }
 
-  showHideBarValues() {
+  toggleShowBarValues() {
     let oldState = this.state.showBarValues
     this.setState({
       showBarValues:!oldState
@@ -24,7 +24,7 @@ class Metrics extends React.Component {
     let text = this.state.showBarValues? "Hide" : "Show"
     return (
       <div className="Metrics">
-        <button onClick={this.showHideBarValues}>{text} Bar Values</button>
+        <button onClick={this.toggleShowBarValues}>{text} Bar Values</button>
         <SLMetrics showBarValues={this.state.showBarValues}/>
         <hr />
         <T3Metrics showBarValues={this.state.showBarValues}/>
