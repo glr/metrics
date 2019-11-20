@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import {render, unmountComponentAtNode} from 'react-dom'
 import Metrics from './Metrics.jsx'
 import { act } from 'react-dom/test-utils'
 
@@ -32,6 +32,7 @@ jest.mock("./EpicsMetrics.jsx", () => {
     )
   }
 })
+
 describe('Metrics component', () => {
   let div = null
   beforeEach(() => {
@@ -40,20 +41,22 @@ describe('Metrics component', () => {
   })
 
   afterEach(() => {
-    ReactDOM.unmountComponentAtNode(div)
+    unmountComponentAtNode(div)
     div.remove()
     div = null
   })
 
 
   it('renders without crashing', () => {
-    ReactDOM.render(<Metrics />, div)
+    act(() => {
+      render(<Metrics />, div)
+    })
   })
 
   it('toggles whether or not to show the bar graph values', () => {
     const toggleShowBarValues = jest.spyOn(Metrics.prototype, 'toggleShowBarValues')
     act(() => {
-      ReactDOM.render(<Metrics />, div)
+      render(<Metrics />, div)
     })
     
     const button = document.querySelector("button")
@@ -75,21 +78,21 @@ describe('Metrics component', () => {
 
   it ('renders SLMetrics', () => {
     act(() => {
-      ReactDOM.render(<Metrics />, div)
+      render(<Metrics />, div)
     })
     expect(div.querySelector('[data-testid="SLMetrics"]').textContent).toEqual("TestSLMetrics")
   })
 
   it ('renders T3Metrics', () => {
     act(() => {
-      ReactDOM.render(<Metrics />, div)
+      render(<Metrics />, div)
     })
     expect(div.querySelector('[data-testid="T3Metrics"]').textContent).toEqual("TestT3Metrics")
   })
 
   it ('renders EpicsMetrics', () => {
     act(() => {
-      ReactDOM.render(<Metrics />, div)
+      render(<Metrics />, div)
     })
     expect(div.querySelector('[data-testid="EpicsMetrics"]').textContent).toEqual("TestEpicsMetrics")
   })
