@@ -18,7 +18,7 @@ describe('TeamMetrics component', () => {
 
   it('renders without crashing', () => {
     act(() => {
-      render(<TeamMetrics teamName="Team"/>, div)
+      render(<TeamMetrics />, div)
     })
   })
 })

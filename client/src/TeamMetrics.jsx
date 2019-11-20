@@ -9,7 +9,7 @@ class TeamMetrics extends React.Component {
     super(props)
     this.state = {
       headerMetrics: {
-        teamName: this.props.teamName,
+        teamName: this.props.teamName || "",
         lastSprintName:"",
         lastSprintGoal: "",
         avgForecastError: 0,
@@ -68,16 +68,17 @@ class TeamMetrics extends React.Component {
   }
 
   render() {
+    const teamName = this.props.teamName || ""
     return (
       <div>
         <hr />
         <TeamHeader data={this.state.headerMetrics} />
         <p />
-        <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
+        <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
         <p />
-        <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+        <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
         <p />
-        <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={this.props.teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
+        <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
         <hr />
       </div>
     )
