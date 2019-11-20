@@ -1,7 +1,8 @@
 import * as d3 from "d3"
 import last from "lodash/last"
 import React from 'react'
-import {TeamHeader, TrendLineChart, StackedBarChart} from './components/components.jsx'
+import {TrendLineChart, StackedBarChart} from './components/components.jsx'
+import {TeamHeader} from './TeamHeader.jsx'
 
 class TeamMetrics extends React.Component {
   constructor(props) {

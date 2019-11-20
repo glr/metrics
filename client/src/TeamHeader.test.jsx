@@ -1,6 +1,6 @@
 import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
-import {TeamHeader} from './components.jsx'
+import {TeamHeader} from './TeamHeader.jsx'
 import { act } from 'react-dom/test-utils'
 
 describe('TeamHeader component', () => {
@@ -18,7 +18,7 @@ describe('TeamHeader component', () => {
 
   it('renders without crashing', () => {
     act(() => {
-      render(<TeamHeader data={{teamName:"Test"}} />, div)
+      render(<TeamHeader />, div)
     })
   })
 })
