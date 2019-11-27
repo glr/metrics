@@ -24,8 +24,8 @@ class EpicsMetrics extends React.Component {
     render() {
       return(
         <div>
-          Big Rocks vs. non-Big Rocks - In Progress
-          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipBars} yLabel={"Percent"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
+          <a href="https://sparefoot.atlassian.net/secure/RapidBoard.jspa?rapidView=270" target="_blank" >Epics In Progress - Big Rocks vs. non-Big Rocks</a>
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipBars} yLabel={"Percent (by count)"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPBars"} hoverPrec={2} additionalHoverText={"%"} />
           <p />
           <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.wipCountBars} yLabel={"Epics"} xLabel="Date" xTicks={this.state.dates} chart={"EpicWIPCountBars"} />
         </div>

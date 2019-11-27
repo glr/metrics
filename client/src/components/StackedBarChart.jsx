@@ -35,14 +35,14 @@ export class StackedBarChart extends React.Component {
       
       // Display Code
       const selector = "." + this.props.chart
-      const margin = { top: 50, right: 150, bottom: 50, left: 50 }
-      const width = 800 - margin.right - margin.left
+      const margin = { top: 50, right: 200, bottom: 50, left: 50 }
+      const width = 900 - margin.right - margin.left
       const height = 400 - margin.top - margin.bottom
       const svg = d3.select(selector)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .style("margin-left", 100)
+        .style("margin-left", 50)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   
@@ -61,10 +61,18 @@ export class StackedBarChart extends React.Component {
         .domain([0, yMax])
         .range([height, 0])
   
+      // other color options:
       const colorRange = d3.scaleLinear()
         .domain([0, categories.length-1])
         .range([1, 0])
       const colors = d3.interpolateRdYlBu
+      // const colorRange = d3.scaleLinear()
+      //   .domain([0, categories.length-1])
+      //   .range([0.95, 0.1])
+      // const colors = d3.interpolateTurbo
+      
+      // const colors = d3.interpolateSpectral
+      // const colors = d3.interpolateWarm
       
       const stack = d3.stack()
         .keys(Object.keys(last(barData) || {}))

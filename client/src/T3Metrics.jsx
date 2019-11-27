@@ -72,7 +72,7 @@ class T3Metrics extends React.Component {
       return(
         <div>
           Tier 3 - Work Distribution
-          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Report Date" xTicks={this.state.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent (by count)"} xLabel="Report Date" xTicks={this.state.dates} chart="T3IssueTypeBarChart" hoverPrec={2} additionalHoverText={"%"} />
         </div>
       )
     }

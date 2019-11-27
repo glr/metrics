@@ -3,6 +3,7 @@ import last from "lodash/last"
 import React from 'react'
 import {TrendLineChart, StackedBarChart} from './components/components.jsx'
 import {TeamHeader} from './TeamHeader.jsx'
+import './TeamMetrics.css'
 
 class TeamMetrics extends React.Component {
   constructor(props) {
@@ -70,16 +71,17 @@ class TeamMetrics extends React.Component {
   render() {
     const teamName = this.props.teamName || ""
     return (
-      <div>
-        <hr />
-        <TeamHeader data={this.state.headerMetrics} />
-        <p />
-        <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
-        <p />
-        <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
-        <p />
-        <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent"} xLabel="Sprint" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
-        <hr />
+      <div className="teamMetrics">
+        <div className="teamHeader">
+          <TeamHeader data={this.state.headerMetrics} />
+        </div>
+        <div className="teamCharts" >
+          <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
+          <p />
+          <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+          <p />
+          <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent (by count)"} xLabel="Sprint" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
+        </div>
       </div>
     )
   }

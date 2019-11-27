@@ -1,0 +1,16 @@
+.teamMetrics {
+  border: 2px solid #000;
+  margin: 10px; 
+}
+
+.teamHeader {
+    text-align: left;
+    width: 15em;
+    border: 1px solid #000;
+    margin: 10px 10px 10px -15em;
+    float: right;
+}
+
+/* .teamCharts {   
+    text-align: left;
+} */
