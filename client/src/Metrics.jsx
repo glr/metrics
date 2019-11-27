@@ -30,6 +30,8 @@ class Metrics extends React.Component {
         <T3Metrics showBarValues={this.state.showBarValues}/>
         <hr />
         <EpicsMetrics showBarValues={this.state.showBarValues}/>
+        <hr />
+        <button onClick={this.toggleShowBarValues}>{text} Bar Values</button>
       </div>
     )
   }
