@@ -53,6 +53,37 @@ module Api
       def t3
         render json:Metrics::T3.order(:created_at).last(6), status:200
       end
+
+      def bugs
+        # SDM: 26076(B/DF/I), 25890(all), and cf[10300] = "Scrumdog Millionaire" 
+        # SCMDGN: 26077(B/DF/I), 25885(all), and cf[10300] = "Scrumudgeons"
+        # SLT: 26104
+        # SL: 26057
+        team = {
+          '1' => 'Scrumudgeons',
+          '2' => '"Scrumdog Millionaire"'
+        }
+        qurl = ENV['JURL'] + '/rest/gadget/1.0/dateCountInPeriod?jql=filter=26057 and cf[10300]=' + team[params[:id]] + '&period=weekly&daysprevious=60&operation=cumulative&field=created&field=resolved&field=unresolvedTrend&includeVersions=false'
+        
+        # we'll want to cache this, probably
+        response = JiraDataImporter::jiraQuery(qurl)
+        
+        data = []
+        response[:results].each { |d|
+          date = Date.strptime((d[:data][:resolved][:searchUrl]).match(/\+%3C\+(.*)/)[1], '%Y-%m-%d')
+          if date<=Date.today() 
+            data.push(
+              {
+                'created' => d[:data][:created][:count],
+                'resolved' => d[:data][:resolved][:count],
+                'trend' => d[:data][:unresolvedTrend][:count],
+                'date' => date
+              }
+            )
+          end
+        }
+        render json:data, status:200
+      end
     end
   end
 end

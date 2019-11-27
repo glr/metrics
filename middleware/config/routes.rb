@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       get 'metrics/t3', to: 'metrics#t3'
       get 'metrics/:id', to: 'metrics#show'
       get 'teams', to: 'teams#index'
+      get 'bugs/:id', to: 'metrics#bugs'
     end
   end
 end
