@@ -30,14 +30,14 @@ export class TrendLineChart extends React.Component {
   
       // Display Code
       const selector = "." + this.props.chart
-      const margin = { top: 50, right: 50, bottom: 50, left: 50 }
-      const width = 700 - margin.right - margin.left
+      const margin = { top: 50, right: 150, bottom: 50, left: 50 }
+      const width = 800 - margin.right - margin.left
       const height = 400 - margin.top - margin.bottom
       const svg = d3.select(selector)
       .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .style("margin-left", 100)
+        .style("margin-left", 50)
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   
@@ -45,8 +45,9 @@ export class TrendLineChart extends React.Component {
         .domain([0, n - 1])
         .range([0, width])
   
+      const yScaleTop = d3.max(data) || 0
       const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data)])
+        .domain([0, yScaleTop])
         .range([height, 0])
   
       svg.append("g")
@@ -100,6 +101,23 @@ export class TrendLineChart extends React.Component {
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 1)
         .attr("d", dataLine)
+
+
+    //draw goal
+    const goal = [20]
+    const goalBar = svg.selectAll(".goal")
+      .data(goal)
+      .enter()
+      .append("rect")
+      .attr("x", d => xScale(0))
+      .attr("y", d => yScale(d) < 0 ? 0 : yScale(d))
+      .attr("width", width)
+      .attr("height", (d, i) => {
+        const h = d < d3.max(yScale.domain()) ? d : d3.max(yScale.domain())
+        return yScale(0) - yScale(h)
+      })
+      .attr("fill", "green")
+      .style("opacity", 0.1)
     }
   
     render() {
