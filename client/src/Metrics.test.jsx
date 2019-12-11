@@ -3,35 +3,26 @@ import {render, unmountComponentAtNode} from 'react-dom'
 import Metrics from './Metrics.jsx'
 import { act } from 'react-dom/test-utils'
 
-jest.mock("./SLMetrics.jsx", () => {
-  return function MockedSLMetrics(props) {
-    return (
-      <div data-testid="SLMetrics">
-        TestSLMetrics
-      </div>
-    )
-  }
-})
+jest.mock("./SLMetrics.jsx", () => 
+  () => 
+    <div data-testid="SLMetrics">
+      TestSLMetrics
+    </div>
+)
 
-jest.mock("./T3Metrics.jsx", () => {
-  return function MockedT3Metrics(props) {
-    return (
-      <div data-testid="T3Metrics">
-        TestT3Metrics
-      </div>
-    )
-  }
-})
+jest.mock("./T3Metrics.jsx", () => 
+  () =>
+    <div data-testid="T3Metrics">
+      TestT3Metrics
+    </div>
+)
 
-jest.mock("./EpicsMetrics.jsx", () => {
-  return function MockedEpicsMetrics(props) {
-    return (
-      <div data-testid="EpicsMetrics">
-        TestEpicsMetrics
-      </div>
-    )
-  }
-})
+jest.mock("./EpicsMetrics.jsx", () => 
+  () =>
+    <div data-testid="EpicsMetrics">
+      TestEpicsMetrics
+    </div>
+)
 
 describe('Metrics component', () => {
   let div = null
