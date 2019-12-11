@@ -209,14 +209,14 @@ class JiraDataImporter
                 types[t] = jiraQuery(qurl)[:total].to_f
             end
             total_count = types.values.reduce { |sum, i| sum + (i == nil ? 0 : i) }
-            sprint.story_pct = types["Story"]/ total_count
+            sprint.story_pct = types["Story"]/total_count
             sprint.spike_pct = types["Spike"]/total_count
             sprint.bug_pct = types["Bug"]/total_count
             sprint.data_fix_pct = types["Data Fix"]/total_count
             sprint.operational_work_pct = types["Operational Work"]/total_count
             sprint.incident_pct = types["Incident"]/total_count
             sprint.technical_debt_pct = types["Technical Debt"]/total_count
-            sprint.save()
+            p sprint.save()
         end 
     end
 
