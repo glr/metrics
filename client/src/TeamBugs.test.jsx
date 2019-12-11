@@ -14,12 +14,15 @@ describe('TeamBugs component', () => {
   beforeEach(() => {
     div = document.createElement('div')
     document.body.appendChild(div)
+    const mockSuccessfulResponse = []
+    fetch.mockResponseOnce(JSON.stringify(mockSuccessfulResponse))
   })
 
   afterEach(() => {
     unmountComponentAtNode(div)
     div.remove()
     div = null
+    fetch.resetMocks()
   })
 
   it('renders without crashing', () => {

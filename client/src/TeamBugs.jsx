@@ -28,7 +28,7 @@ class TeamBugs extends React.Component {
 
     render() {
         return(
-            <div>
+            <div className="teamBugs">
                 {this.props.teamName} Bugs
                 <WatermarkLineChart chart={(this.props.teamName + "WatermarkLineChart").replace(/\s/g, '')} />
             </div>
