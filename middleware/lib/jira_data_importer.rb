@@ -45,7 +45,28 @@ class JiraDataImporter
             report_period: report_period
             )
         else
-            puts "Report for " + Date.today().strftime("%B %-d, %Y") + " already saved."
+            puts "Epic Report for " + Date.today().strftime("%B %-d, %Y") + " already saved."
+        end
+    end
+
+    def self.storyBRMetricsRetrieve
+        baseString = @@baseUrl + '/rest/api/latest/search?jql=project=SL and type!=epic and status='
+
+        otherInProgressUrl = baseString + '"In Progress" and (labels not in (st_big_rock) or labels is empty)'
+        bigrockInProgressUrl = baseString + '"In Progress" and (labels in (st_big_rock))'
+        
+        lastDate = Metrics::StoryBr.last()[:report_period]
+        if Date.today() > Date.parse(lastDate)
+            bigRockWIP = jiraQuery(bigrockInProgressUrl)[:total]
+            otherWIP = jiraQuery(otherInProgressUrl)[:total]
+            report_period = Date.today.strftime("%B %-d, %Y")
+            Metrics::StoryBr.create(
+            bigrocks: bigRockWIP, 
+            other: otherWIP, 
+            report_period: report_period
+            )
+        else
+            puts "Story Report for " + Date.today().strftime("%B %-d, %Y") + " already saved."
         end
     end
 
@@ -104,12 +125,12 @@ class JiraDataImporter
             
             lcounts["other"] = data[:total]
             data[:issues].each { |i| 
-            i[:fields][:labels].each { |l|
-                if lcounts.include?(l)
-                lcounts[l] += 1 
-                lcounts["other"] -= 1
-                end
-            }
+                i[:fields][:labels].each { |l|
+                    if lcounts.include?(l)
+                    lcounts[l] += 1 
+                    lcounts["other"] -= 1
+                    end
+                }
             }
             # store counts of labels results in model
             data = Metrics::T3.new()
@@ -220,8 +241,6 @@ class JiraDataImporter
         end 
     end
 
-    private
-    
     def self.jiraQuery(qUrl) 
         response = HTTParty.get(qUrl, {
             headers: {"Authorization" => "Basic " + @@auth}
