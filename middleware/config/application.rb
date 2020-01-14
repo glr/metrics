@@ -24,6 +24,5 @@ module Middleware
        end
     end
 
-    config.hosts << "middleware"
   end
 end
