@@ -83,7 +83,7 @@ module Api
         #     )
         #   end
         # }
-        data = {test: "test"}
+        data = [{test: "test"}]
         render json:data, status:200
       end
     end

@@ -15,6 +15,6 @@ WORKDIR /middleware
 COPY Gemfile /middleware/Gemfile
 COPY Gemfile.lock /middleware/Gemfile.lock
 
-RUN gem update --default && gem update && gem install bundler && bundle install
+RUN gem update && gem install bundler && bundle install
 
 COPY . /middleware
