@@ -49,6 +49,10 @@ class JiraDataImporter
         end
     end
 
+    def self.outcomeMetricsRetrieve
+        
+    end
+
     def self.storyBRMetricsRetrieve
         baseString = @@baseUrl + '/rest/api/latest/search?jql=project=SL and type!=epic and status='
 

@@ -36,4 +36,11 @@ class JiraDataImporterTest < ActiveSupport::TestCase
         JiraDataImporter::jiraQuery(qurl)
     end
 
+    test "retrieving outcomeMetrics causes no exceptions to be raised" do
+        assert_nothing_raised {
+            JiraDataImporter::outcomeMetricsRetrieve
+        }
+    end
+
+    
 end
