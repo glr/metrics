@@ -23,6 +23,6 @@ namespace :storable do
 
     desc "Retrieve Storable NC T3 metrics from Jira"
     task :retrieveT3Metrics => :environment do
-       JiraDataImporter.t3Retrieve() 
+        JiraDataImporter.t3Retrieve() 
     end
 end

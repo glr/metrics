@@ -50,7 +50,7 @@ class JiraDataImporter
     end
 
     def self.outcomeMetricsRetrieve
-        
+        jiraQuery(@@baseUrl)
     end
 
     def self.storyBRMetricsRetrieve
