@@ -91,6 +91,7 @@ class JiraDataImporter
         #     CSL1: "csl1"
         #     Documentation: "devdocumentation"
         #     CC Merge: "ccmerge"
+        #     Investigation: "investigation"
         #     Other: everything else or no label
         
         lcounts = {
