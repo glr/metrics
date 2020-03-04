@@ -25,6 +25,7 @@ class T3Metrics extends React.Component {
         //   "CSL-1",
         //   "Documentation",
         //   "CC Merge",
+        //   "Investigation"
         //   "Other"
         // ]
   
@@ -44,6 +45,7 @@ class T3Metrics extends React.Component {
             d.csl1 +
             d.documentation +
             d.ccMerge +
+            d.investigation +
             d.other
           metricData.typeCounts.push({
             "Custom Dev": d.customDev/total * 100,
@@ -56,6 +58,7 @@ class T3Metrics extends React.Component {
             "CSL-1": d.csl1/total * 100,
             "Documentation": d.documentation/total * 100,
             "CC Merge": d.ccMerge/total * 100,
+            "Investigation": d.investigation/total * 100,
             "Other": d.other/total * 100
           })
           metricData.dates.push(d.endDate)

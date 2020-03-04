@@ -13,7 +13,8 @@ class JiraDataImporter
       "csl1" => "csl1",
       "devdocumentation" => "documentation",
       "ccmerge" => "ccMerge",
-      "other" => "other"
+      "other" => "other",
+      "investigation" => "investigation"
     }
 
     def self.teamMetricsRetrieve
@@ -105,7 +106,8 @@ class JiraDataImporter
             "csl1"=> 0,
             "devdocumentation"=> 0,
             "ccmerge"=> 0,
-            "other"=> 0
+            "other"=> 0,
+            "investigation" => 0
         }
 
         # get last entry
