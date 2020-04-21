@@ -23,7 +23,7 @@ class SLMetrics extends React.Component {
       this.state.teamMetrics.map((d, key) => 
         <div key={key}>
           <TeamMetrics showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} />
-          <TeamBugs showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} />
+          {/* <TeamBugs showBarValues={this.props.showBarValues} team={d.id} teamName={d.name} /> */}
         </div>)
     )
   }

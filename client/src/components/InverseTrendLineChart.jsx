@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import React from 'react'
 
-export class TrendLineChart extends React.Component {
+export class InverseTrendLineChart extends React.Component {
     componentDidMount() {
       this.drawChart()
     }
@@ -45,7 +45,7 @@ export class TrendLineChart extends React.Component {
         .domain([0, n - 1])
         .range([0, width])
   
-      const yScaleTop = d3.max(data) || 0
+      const yScaleTop = (120 > d3.max(data) ? 120 : d3.max(data)) || 0
       const yScale = d3.scaleLinear()
         .domain([0, yScaleTop])
         .range([height, 0])
@@ -104,7 +104,7 @@ export class TrendLineChart extends React.Component {
 
 
     //draw goal
-    const goal = [15]
+    const goal = [115]
     const goalBar = svg.selectAll(".goal")
       .data(goal)
       .enter()
@@ -114,7 +114,7 @@ export class TrendLineChart extends React.Component {
       .attr("width", width)
       .attr("height", (d, i) => {
         const h = d < d3.max(yScale.domain()) ? d : d3.max(yScale.domain())
-        return yScale(0) - yScale(h)
+        return yScale(0)-yScale(h-85) 
       })
       .attr("fill", "green")
       .style("opacity", 0.1)

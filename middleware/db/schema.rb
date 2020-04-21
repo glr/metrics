@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_27_185635) do
+ActiveRecord::Schema.define(version: 2020_03_26_235313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2020_02_27_185635) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "jid"
+    t.float "attainment"
     t.index ["team_id"], name: "index_metrics_sprints_on_team_id"
   end
 

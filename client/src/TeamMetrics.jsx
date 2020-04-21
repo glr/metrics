@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import last from "lodash/last"
 import React from 'react'
-import {TrendLineChart, StackedBarChart} from './components/components.jsx'
+import {TrendLineChart, InverseTrendLineChart, StackedBarChart} from './components/components.jsx'
 import {TeamHeader} from './TeamHeader.jsx'
 import './TeamMetrics.css'
 
@@ -32,12 +32,14 @@ class TeamMetrics extends React.Component {
         sprints: [],
         scopeChange: [],
         forecastError: [],
+        attainment: [],
         typeCounts: []
       }
       data.map(d => {
         metricData.sprints.push(d.name)
-        metricData.scopeChange.push(d.scope_change_pct * 100)
+        metricData.scopeChange.push(Math.abs(d.scope_change_pct * 100))
         metricData.forecastError.push(d.forecast_error_pct * 100)
+        metricData.attainment.push(d.attainment * 100)
         metricData.typeCounts.push({
           "Story": d.story_pct * 100,
           "Bug": d.bug_pct * 100,
@@ -60,6 +62,7 @@ class TeamMetrics extends React.Component {
       }
       this.setState({
         forecastError: metricData.forecastError,
+        attainment: metricData.attainment,
         sprints: metricData.sprints,
         scopeChange: metricData.scopeChange,
         typeCounts: metricData.typeCounts,
@@ -76,6 +79,8 @@ class TeamMetrics extends React.Component {
           <TeamHeader data={this.state.headerMetrics} />
         </div>
         <div className="teamCharts" >
+          <InverseTrendLineChart data={this.state.attainment} xLabel="Sprint" yLabel="Attainment %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastAttainmentLineChart"} />
+          <p />
           <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
           <p />
           <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
