@@ -37,6 +37,7 @@ class JiraDataImporterTest < ActiveSupport::TestCase
     end
 
     test "outcomeMetricsRetrieve makes Jira query" do
+        skip 'This is not ready yet, needs to be refactored to use instance, instead of static calls in rake task'
         JiraDataImporter.stub :jiraQuery, true do 
             assert_nothing_raised {
                 JiraDataImporter.outcomeMetricsRetrieve()

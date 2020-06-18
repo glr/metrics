@@ -46,7 +46,7 @@ describe('SLMetrics component', () => {
     expect(div.querySelector('div[data-testid="TestTeamMetrics"]').textContent).toEqual("TestTeamMetrics")
   })
   
-  it('renders the TeamBugs Component', async () => {
+  it.skip('renders the TeamBugs Component', async () => {
     await act(async () => {
       render(<SLMetrics />, div)
     })
