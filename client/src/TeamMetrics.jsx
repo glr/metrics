@@ -83,7 +83,7 @@ class TeamMetrics extends React.Component {
           <p />
           <TrendLineChart data={this.state.forecastError} xLabel="Sprint" yLabel="Forecast Error %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ForecastErrorLineChart"} />
           <p />
-          <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Scope Change %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
+          <TrendLineChart data={this.state.scopeChange} xLabel="Sprint" yLabel="Mid-Sprint Pivot %" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "ScopeChangeLineChart"} />
           <p />
           <StackedBarChart showBarValues={this.props.showBarValues} data={this.state.typeCounts} yLabel={"Percent (by count)"} xLabel="Sprint" xTicks={this.state.sprints} chart={teamName.replace(/\s/g, '') + "IssueTypeBarChart"} hoverPrec={2} additionalHoverText={"%"} />
         </div>
