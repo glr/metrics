@@ -14,7 +14,7 @@ class SLMetrics extends React.Component {
       return results.json()
     })
     .then(data => {
-      this.setState({teamMetrics: data})
+      this.setState({teamMetrics: data.reverse()})
     })
   }
 
