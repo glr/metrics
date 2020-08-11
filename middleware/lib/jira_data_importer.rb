@@ -121,7 +121,7 @@ class JiraDataImporter
         # check that it's not today or later <- this is start for next period 
         # add 14 days to that, check that it's not today or later <- this is end for next period 
         # repeat until current day falls in the next range it would query
-        baseString = @@baseUrl + '/rest/api/latest/search?fields=labels,issuetype,key&jql=project=T3 AND type not in (epic) AND status in (resolved, closed, done) and resolved>='
+        baseString = @@baseUrl + '/rest/api/latest/search?fields=labels,issuetype,key&jql=project=T3 AND type not in (epic) AND status in (resolved, closed, done) and resolution not in ("Not planned") and resolved>='
         while ((nextEnd<today) && (nextStart < today)) do 
             startQ = nextStart.strftime("%Y-%m-%d")
             endQ = nextEnd.strftime("%Y-%m-%d")
