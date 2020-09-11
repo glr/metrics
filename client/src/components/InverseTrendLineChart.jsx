@@ -37,6 +37,7 @@ export class InverseTrendLineChart extends React.Component {
       .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
         .style("margin-left", 50)
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
