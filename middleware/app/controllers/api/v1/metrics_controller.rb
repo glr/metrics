@@ -51,10 +51,6 @@ module Api
         render json:data, status:200
       end
 
-      def t3
-        render json:Metrics::T3.order(:created_at).last(6), status:200
-      end
-
       def bugs
         # # SDM: 26076(B/DF/I), 25890(all), and cf[10300] = "Scrumdog Millionaire" 
         # # SCMDGN: 26077(B/DF/I), 25885(all), and cf[10300] = "Scrumudgeons"
