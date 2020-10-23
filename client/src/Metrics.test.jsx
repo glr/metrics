@@ -10,13 +10,6 @@ jest.mock("./SLMetrics.jsx", () =>
     </div>
 )
 
-jest.mock("./T3Metrics.jsx", () => 
-  () =>
-    <div data-testid="T3Metrics">
-      TestT3Metrics
-    </div>
-)
-
 jest.mock("./EpicsMetrics.jsx", () => 
   () =>
     <div data-testid="EpicsMetrics">
@@ -72,13 +65,6 @@ describe('Metrics component', () => {
       render(<Metrics />, div)
     })
     expect(div.querySelector('[data-testid="SLMetrics"]').textContent).toEqual("TestSLMetrics")
-  })
-
-  it ('renders T3Metrics', () => {
-    act(() => {
-      render(<Metrics />, div)
-    })
-    expect(div.querySelector('[data-testid="T3Metrics"]').textContent).toEqual("TestT3Metrics")
   })
 
   it ('renders EpicsMetrics', () => {

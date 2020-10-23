@@ -1,7 +1,6 @@
 import React from 'react'
 import SLMetrics from './SLMetrics.jsx'
 import EpicsMetrics from './EpicsMetrics.jsx'
-import T3Metrics from './T3Metrics.jsx'
 import './Metrics.css'
 
 class Metrics extends React.Component {
@@ -26,8 +25,6 @@ class Metrics extends React.Component {
       <div className="Metrics">
         <button onClick={this.toggleShowBarValues}>{text} Bar Values</button>
         <SLMetrics showBarValues={this.state.showBarValues}/>
-        <hr />
-        <T3Metrics showBarValues={this.state.showBarValues}/>
         <hr />
         <EpicsMetrics showBarValues={this.state.showBarValues}/>
         <hr />
