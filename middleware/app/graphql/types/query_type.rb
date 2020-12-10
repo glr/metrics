@@ -10,5 +10,13 @@ module Types
       "Hello World!"
     end
 
+    field :teams,
+          [Types::TeamType],
+          null: false,
+          description: 'Returns a list of teams for which metrics exist'
+
+    def teams
+      Team.all
+    end
   end
 end
