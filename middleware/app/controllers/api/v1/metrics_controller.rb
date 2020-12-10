@@ -2,12 +2,14 @@
 module Api
   module V1
     class MetricsController < ActionController::API
+      SPRINTS_TO_SHOW = 7
+      
       def index
           render json:Metrics::Sprint.order(:created_at).last(12).as_json, status: 200
       end
 
       def show
-        obj = Metrics::Sprint.where(team_id: params[:id]).order(:created_at).last(6).as_json
+        obj = Metrics::Sprint.where(team_id: params[:id]).order(:created_at).last(SPRINTS_TO_SHOW).as_json
         render json:obj, status:200
       end
 
@@ -26,7 +28,7 @@ module Api
           wipCountBars:[]
         }
 
-        Metrics::Epic.last(6).each { |d|
+        Metrics::Epic.last(SPRINTS_TO_SHOW).each { |d|
           data[:wip][:bigRocks].push d.wip_bigrocks
           data[:todo][:bigRocks].push d.todo_bigrocks
           data[:wip][:other].push d.wip_other
