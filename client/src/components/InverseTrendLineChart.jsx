@@ -105,7 +105,7 @@ export class InverseTrendLineChart extends React.Component {
 
 
     //draw goal
-    const goal = [115]
+    const goal = [120]
     const goalBar = svg.selectAll(".goal")
       .data(goal)
       .enter()
@@ -115,7 +115,7 @@ export class InverseTrendLineChart extends React.Component {
       .attr("width", width)
       .attr("height", (d, i) => {
         const h = d < d3.max(yScale.domain()) ? d : d3.max(yScale.domain())
-        return yScale(0)-yScale(h-85) 
+        return yScale(0)-yScale(h-80) 
       })
       .attr("fill", "green")
       .style("opacity", 0.1)

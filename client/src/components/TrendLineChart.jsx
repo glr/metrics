@@ -105,7 +105,7 @@ export class TrendLineChart extends React.Component {
 
 
     //draw goal
-    const goal = [15]
+    const goal = [20]
     const goalBar = svg.selectAll(".goal")
       .data(goal)
       .enter()

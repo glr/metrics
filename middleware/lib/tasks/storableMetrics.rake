@@ -20,9 +20,4 @@ namespace :storable do
     task :retrieveBigRockMetrics => :environment do
         JiraDataImporter.storyBRMetricsRetrieve()
     end
-
-    desc "Retrieve Storable NC T3 metrics from Jira"
-    task :retrieveT3Metrics => :environment do
-        JiraDataImporter.t3Retrieve() 
-    end
 end
