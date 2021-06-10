@@ -88,7 +88,7 @@ class JiraDataImporter
     # 1. retrieve the last few closed sprints, ~6 or so
     # jira returns 50 at a time by default, you can set pagination size with maxResults,
     # and will need to figure out paging using some startAt + maxResults looping logic
-    qurl = "#{@@baseUrl}/rest/agile/latest/board/#{tjid}/sprint?state=closed&startAt=25"
+    qurl = "#{@@baseUrl}/rest/agile/latest/board/#{tjid}/sprint?state=closed&startAt=30"
     sprints = jiraQuery(qurl)[:values].last(6)
 
     # 2. find the last completed sprint id

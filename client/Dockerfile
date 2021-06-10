@@ -1,9 +1,9 @@
 FROM node:latest
 
-RUN npm update && npm install yarn
-
 RUN mkdir /client
 WORKDIR /client
+
+RUN npm update && npm install yarn
 
 COPY package.json /client/package.json
 
